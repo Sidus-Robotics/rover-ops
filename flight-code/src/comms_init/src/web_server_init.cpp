@@ -1,39 +1,55 @@
-#include <vector.h>
+#include <vector>
 #include <memory>
 #include <chrono>
 
 #include <ixwebsocket/IXNetSystem.h>
 #include <ixwebsocket/IXWebSocket.h>
 #include <ixwebsocket/IXUserAgent.h>
-#include <iostream>
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
+static const std::string URL = "ws://localhost:3000/";
+
 class WebSocketNode: public rclcpp::Node{
     public:
     WebSocketNode() : Node("websocket-node") {
-        //TODO: Make custom QoS profile
+        //Establish Websocket connection
 
-        rclcpp::QoS qos_profile_req(rclcpp::KeepLast(5));
-        qos_profile_req.reliability(rclcpp::ReliabilityPolicy::BestEffort);
-        qos_profile_req.durability(rclcpp::DurabilityPolicy::TransientLocal);
+        web_socket_.setUrl(URL);
+        web_socket_.setOnMessageCallback([this](const ix::WebSocketMessagePtr &msg){
+            this->webServerCallbackHandler(msg);
+        });
+        web_socket_.start();
+        //TODO: Make custom QoS profile
 
         rclcpp::QoS qos_profile_res(rclcpp::KeepLast(5));
         qos_profile_res.reliability(rclcpp::ReliabilityPolicy::BestEffort);
         qos_profile_res.durability(rclcpp::DurabilityPolicy::TransientLocal);
 
-        auto topic_cb = [this](std_msgs::msg::String::UniquePtr msg) {
-            RCLCPP_INFO(this->get_logger(), "I heard: '%s'", msg->data.c_str());
-        };
-
-        request_publisher_ = this->create_publisher<std_msgs::msg::String>("web-request", qos_profile_req);
-        response_subscription_ = this->create_subscription<std_msgs::msg::String>("web-response", qos_profile_res, topic_cb);
+        request_publisher_ = this->create_publisher<std_msgs::msg::String>("web-request", qos_profile_res);
     }
+
+    void webServerCallbackHandler(const ix::WebSocketMessagePtr& msg) {
+        if (msg->type == ix::WebSocketMessageType::Message)
+            {
+                RCLCPP_INFO(this->get_logger(), "I heard: '%s'", msg->str.c_str());
+
+                //Change types
+                
+                std_msgs::msg::String request_message;
+
+                request_message.data = msg->str;
+
+                this->request_publisher_->publish(request_message);
+            }
+        return;
+    };
 
     private:
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr request_publisher_;
     rclcpp::Subscription<std_msgs::msg::String>::SharedPtr response_subscription_;
+    ix::WebSocket web_socket_;
 
 };
 
