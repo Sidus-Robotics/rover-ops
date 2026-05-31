@@ -5,7 +5,6 @@
 #include <ixwebsocket/IXNetSystem.h>
 #include <ixwebsocket/IXWebSocket.h>
 #include <ixwebsocket/IXUserAgent.h>
-#include <iostream>
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
@@ -30,6 +29,11 @@ class WebSocketNode: public rclcpp::Node{
         request_publisher_ = this->create_publisher<std_msgs::msg::String>("web-request", qos_profile_req);
         response_subscription_ = this->create_subscription<std_msgs::msg::String>("web-response", qos_profile_res, topic_cb);
     }
+
+    void WebServer(void) {
+        //TODO add IXWebsocket implementation
+        return;
+    };
 
     private:
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr request_publisher_;
