@@ -13,7 +13,7 @@ static const std::string URL = "ws://localhost:3000/";
 
 class WebSocketNode: public rclcpp::Node{
     public:
-    WebSocketNode() : Node("websocket-node") {
+    WebSocketNode() : Node("websocke_node") {
         //Establish Websocket connection
 
         web_socket_.setUrl(URL);
@@ -27,7 +27,8 @@ class WebSocketNode: public rclcpp::Node{
         qos_profile_res.reliability(rclcpp::ReliabilityPolicy::BestEffort);
         qos_profile_res.durability(rclcpp::DurabilityPolicy::TransientLocal);
 
-        request_publisher_ = this->create_publisher<std_msgs::msg::String>("web-request", qos_profile_res);
+        request_publisher_ = this->create_publisher<std_msgs::msg::String>("web_request", qos_profile_res);
+        RCLCPP_INFO(this->get_logger(), "web_request node started.");
     }
 
     void webServerCallbackHandler(const ix::WebSocketMessagePtr& msg) {

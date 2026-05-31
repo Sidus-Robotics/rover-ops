@@ -1,3 +1,7 @@
+# colcon build --packages-select comms_init
+# source install/setup.bash
+# ros2 run comms_init web_server_init
+
 cmake_minimum_required(VERSION 3.8)
 project(comms_init)
 
