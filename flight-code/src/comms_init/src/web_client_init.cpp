@@ -1,3 +1,7 @@
+// Implements
+#include "comms_init/web_client_init.hpp"
+
+// Uses
 #include <vector>
 #include <memory>
 #include <chrono>
@@ -9,11 +13,9 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
-static const std::string URL = "ws://localhost:3000/";
-
 class WebSocketNode: public rclcpp::Node{
     public:
-    WebSocketNode() : Node("websocke_node") {
+    WebSocketNode() : Node("websocket_node") {
         //Establish Websocket connection
 
         web_socket_.setUrl(URL);
@@ -21,6 +23,7 @@ class WebSocketNode: public rclcpp::Node{
             this->webServerCallbackHandler(msg);
         });
         web_socket_.start();
+        RCLCPP_INFO(this->get_logger(), "websocket started on '%s'.", URL);
         //TODO: Make custom QoS profile
 
         rclcpp::QoS qos_profile_res(rclcpp::KeepLast(5));
@@ -44,6 +47,12 @@ class WebSocketNode: public rclcpp::Node{
 
                 this->request_publisher_->publish(request_message);
             }
+        return;
+    };
+
+    void webConnectionCleanup() {
+        //TODO add cleanup aka destroy the connection cleanly.
+
         return;
     };
 

@@ -1,6 +1,6 @@
 # colcon build --packages-select comms_init
 # source install/setup.bash
-# ros2 run comms_init web_server_init
+# ros2 run comms_init web_client_init
 
 cmake_minimum_required(VERSION 3.8)
 project(comms_init)
@@ -13,25 +13,25 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(ixwebsocket REQUIRED)
 
-add_executable(web_server_init src/web_server_init.cpp)
+add_executable(web_client_init src/web_client_init.cpp)
 
-target_include_directories(web_server_init PUBLIC
+target_include_directories(web_client_init PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
 
 # Dependencies within /opt/ros/jazzy/include
-ament_target_dependencies(web_server_init
+ament_target_dependencies(web_client_init
   rclcpp
   std_msgs
 )
 
 # Other libraries, within /usr/local/include 
-target_link_libraries(web_server_init
+target_link_libraries(web_client_init
   ixwebsocket::ixwebsocket
 )
 
-install(TARGETS web_server_init
+install(TARGETS web_client_init
   DESTINATION lib/${PROJECT_NAME}
 )
 
