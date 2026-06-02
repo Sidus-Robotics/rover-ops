@@ -16,25 +16,47 @@
 class WebSocketNode: public rclcpp::Node{
     public:
     WebSocketNode() : Node("websocket_node") {
-        //Establish Websocket connection
-
-        web_socket_.setUrl(URL);
-        web_socket_.setOnMessageCallback([this](const ix::WebSocketMessagePtr &msg){
-            this->webServerCallbackHandler(msg);
-        });
-        web_socket_.start();
-        RCLCPP_INFO(this->get_logger(), "websocket started on '%s'.", URL);
         //TODO: Make custom QoS profile
 
         rclcpp::QoS qos_profile_res(rclcpp::KeepLast(5));
         qos_profile_res.reliability(rclcpp::ReliabilityPolicy::BestEffort);
         qos_profile_res.durability(rclcpp::DurabilityPolicy::TransientLocal);
 
-        request_publisher_ = this->create_publisher<std_msgs::msg::String>("web_request", qos_profile_res);
+        rclcpp::QoS qos_profile_req(rclcpp::KeepLast(5));
+        qos_profile_req.reliability(rclcpp::ReliabilityPolicy::BestEffort);
+        qos_profile_req.durability(rclcpp::DurabilityPolicy::TransientLocal);
+
+        auto responseHandler = [this](std_msgs::msg::String::UniquePtr msg){
+            web_socket_.send(msg.data);
+        };
+        response_subscription_ = this->create_subscription<std_msgs::msg::String>("web_response", qos_profile_res, responseHandler);
+
+        request_publisher_ = this->create_publisher<std_msgs::msg::String>("web_request", qos_profile_req);
         RCLCPP_INFO(this->get_logger(), "web_request node started.");
+
+        webServerConnect();
     }
 
-    void webServerCallbackHandler(const ix::WebSocketMessagePtr& msg) {
+    ~WebSocketNode() {
+        return;
+    }
+
+    void webServerConnect() {
+        //Establish Websocket connection
+
+        web_socket_.setUrl(URL);
+        web_socket_.setOnMessageCallback([this](const ix::WebSocketMessagePtr &msg){
+            this->webServerHandler(msg);
+        });
+        web_socket_.start();
+        std::string test_msg = "Testing connect...";
+        web_socket_.send(test_msg);
+        RCLCPP_INFO(this->get_logger(), "websocket started on '%s'.", URL);
+
+        return;
+    }
+
+    void webServerHandler(const ix::WebSocketMessagePtr& msg) {
         if (msg->type == ix::WebSocketMessageType::Message)
             {
                 RCLCPP_INFO(this->get_logger(), "I heard: '%s'", msg->str.c_str());

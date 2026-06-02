@@ -9,12 +9,10 @@
 #include <stdlib.h>
 #include <iostream>
 
+#include "rclcpp/rclcpp.hpp"
+
 int port = 3000;
 std::string host("127.0.0.1");
-
-void webServerConnectionHandler() {
-    return;
-}
 
 void main(void) {
     ix::WebSocketServer server(port, host);
