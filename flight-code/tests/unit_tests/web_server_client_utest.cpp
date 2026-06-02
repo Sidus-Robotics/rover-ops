@@ -1,1 +1,0 @@
-//TODO: Ground implementation Simulator
