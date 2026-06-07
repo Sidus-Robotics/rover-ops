@@ -30,3 +30,5 @@ sudo make install
 WIP, src includes all ros2 packages
 ---
 Edit your cpp include paths:  /usr/local/include/** and /usr/include/**
+https://github.com/RobotWebTools/web_video_server
+https://github.com/christianrauch/camera_ros
