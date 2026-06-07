@@ -27,7 +27,7 @@ class WebSocketNode: public rclcpp::Node{
         qos_profile_req.durability(rclcpp::DurabilityPolicy::TransientLocal);
 
         auto responseHandler = [this](std_msgs::msg::String::UniquePtr msg){
-            web_socket_.send(msg.data);
+            web_socket_.send(msg->data);
         };
         response_subscription_ = this->create_subscription<std_msgs::msg::String>("web_response", qos_profile_res, responseHandler);
 
@@ -38,6 +38,7 @@ class WebSocketNode: public rclcpp::Node{
     }
 
     ~WebSocketNode() {
+        webConnectionCleanup();
         return;
     }
 
