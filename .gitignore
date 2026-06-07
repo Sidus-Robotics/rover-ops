@@ -46,6 +46,10 @@ build-*/
 install
 log
 
+# Cloned repos
+web_video_server/
+camera_ros/
+
 # CMake generated files
 CMakeFiles/
 CMakeCache.txt

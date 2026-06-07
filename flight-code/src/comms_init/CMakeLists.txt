@@ -9,6 +9,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(ixwebsocket REQUIRED)
@@ -16,8 +17,8 @@ find_package(ixwebsocket REQUIRED)
 add_executable(web_client_init src/web_client_init.cpp)
 
 target_include_directories(web_client_init PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:include>"
 )
 
 # Dependencies within /opt/ros/jazzy/include
@@ -27,11 +28,15 @@ ament_target_dependencies(web_client_init
 )
 
 # Other libraries, within /usr/local/include 
-target_link_libraries(web_client_init
+# Note, it is the second way of linking libraries shown here:
+# https://docs.ros.org/en/jazzy/How-To-Guides/Ament-CMake-Documentation.html
+# It was the only way it would link through the way I installed it ( in ~/.)
+target_link_libraries(web_client_init 
   ixwebsocket::ixwebsocket
 )
 
-install(TARGETS web_client_init
+install(
+  TARGETS web_client_init
   DESTINATION lib/${PROJECT_NAME}
 )
 

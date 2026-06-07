@@ -1,18 +1,14 @@
 // Implements
 #include "comms_init/web_client_init.hpp"
+#include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/string.hpp"
 
 // Uses
 #include <vector>
 #include <memory>
 #include <chrono>
 
-#include <ixwebsocket/IXNetSystem.h>
 #include <ixwebsocket/IXWebSocket.h>
-#include <ixwebsocket/IXUserAgent.h>
-
-#include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
-
 class WebSocketNode: public rclcpp::Node{
     public:
     WebSocketNode() : Node("websocket_node") {
@@ -27,7 +23,7 @@ class WebSocketNode: public rclcpp::Node{
         qos_profile_req.durability(rclcpp::DurabilityPolicy::TransientLocal);
 
         auto responseHandler = [this](std_msgs::msg::String::UniquePtr msg){
-            web_socket_.send(msg.data);
+            web_socket_.send(msg->data);
         };
         response_subscription_ = this->create_subscription<std_msgs::msg::String>("web_response", qos_profile_res, responseHandler);
 
@@ -38,7 +34,7 @@ class WebSocketNode: public rclcpp::Node{
     }
 
     ~WebSocketNode() {
-        return;
+        webConnectionCleanup();
     }
 
     void webServerConnect() {
@@ -74,7 +70,7 @@ class WebSocketNode: public rclcpp::Node{
 
     void webConnectionCleanup() {
         //TODO add cleanup aka destroy the connection cleanly.
-
+        web_socket_.stop(1000, "Normal Closure.");
         return;
     };
 
