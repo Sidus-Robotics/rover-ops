@@ -33,6 +33,7 @@
 *.la
 *.a
 *.lib
+*.egg-info
 
 # Executables
 *.exe
@@ -45,10 +46,14 @@ Build/
 build-*/
 install
 log
+dist/
 
 # Cloned repos
 web_video_server/
 camera_ros/
+
+# venv's
+rover-venv/
 
 # CMake generated files
 CMakeFiles/
