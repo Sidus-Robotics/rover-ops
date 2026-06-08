@@ -7,7 +7,8 @@ setup(
         'pygame',
         'websockets',
     ],
-    packages=find_packages(),
+    package_dir={'':'src'},
+    packages=find_packages(where='src'),
     entry_points={
         'gui_scripts': [
             'ground-station = ground_station.controller:main',
