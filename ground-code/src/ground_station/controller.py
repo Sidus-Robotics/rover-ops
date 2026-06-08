@@ -1,4 +1,7 @@
 import pygame
+import multiprocessing
+import asyncio
+import websockets
 
 pygame.init()
 
