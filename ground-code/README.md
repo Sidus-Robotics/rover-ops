@@ -27,7 +27,9 @@ pip install --upgrade build
 
 python -m build
 
-pip install 
+pip install dist/<ground-code-tar-or-whl>
+
+pip uninstall ground-code
 
 <entry>
 ```

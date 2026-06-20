@@ -1,9 +1,18 @@
 import pygame
+import serial
+import struct
+import os 
+import math
 import multiprocessing
 import asyncio
 import websockets
 
+
+os.environ["SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS"] = "1"
+
 pygame.init()
+pygame.joystick.init()
+ser = serial.Serial('/dev/ttyUSB1')
 
 
 # This is a simple class that will help us print to the screen.
@@ -35,7 +44,7 @@ def main():
     # Set the width and height of the screen (width, height), and name the window.
     screen = pygame.display.set_mode((500, 700))
     pygame.display.set_caption("Joystick example")
-
+    ser.write(b'1.0')
     # Used to manage how fast the screen updates.
     clock = pygame.time.Clock()
 
@@ -58,7 +67,7 @@ def main():
 
             if event.type == pygame.JOYBUTTONDOWN:
                 print("Joystick button pressed.")
-                if event.button == 0:
+                if event.button == 0: 
                     joystick = joysticks[event.instance_id]
                     if joystick.rumble(0, 0.7, 500):
                         print(f"Rumble effect played on joystick {event.instance_id}")
@@ -84,71 +93,29 @@ def main():
         screen.fill((255, 255, 255))
         text_print.reset()
 
-        # Get count of joysticks.
-        joystick_count = pygame.joystick.get_count()
-
-        text_print.tprint(screen, f"Number of joysticks: {joystick_count}")
-        text_print.indent()
-
         # For each joystick:
         for joystick in joysticks.values():
-            jid = joystick.get_instance_id()
+          
+            x_axis = round(joystick.get_axis(0), 3)
+            y_axis = round(joystick.get_axis(1), 3)
 
-            text_print.tprint(screen, f"Joystick {jid}")
-            text_print.indent()
+            binary_payload = ''.join([str(x_axis), str(y_axis)]).encode('utf-8')
+            print(math.sqrt(pow(x_axis,2) + pow(y_axis,2)))
+            ser.write(bytes(binary_payload))
 
-            # Get the name from the OS for the controller/joystick.
-            name = joystick.get_name()
-            text_print.tprint(screen, f"Joystick name: {name}")
-
-            guid = joystick.get_guid()
-            text_print.tprint(screen, f"GUID: {guid}")
-
-            power_level = joystick.get_power_level()
-            text_print.tprint(screen, f"Joystick's power level: {power_level}")
-
-            # Usually axis run in pairs, up/down for one, and left/right for
-            # the other. Triggers count as axes.
-            axes = joystick.get_numaxes()
-            text_print.tprint(screen, f"Number of axes: {axes}")
-            text_print.indent()
-
-            for i in range(axes):
-                axis = joystick.get_axis(i)
-                text_print.tprint(screen, f"Axis {i} value: {axis:>6.3f}")
-            text_print.unindent()
-
-            buttons = joystick.get_numbuttons()
-            text_print.tprint(screen, f"Number of buttons: {buttons}")
-            text_print.indent()
-
-            for i in range(buttons):
-                button = joystick.get_button(i)
-                text_print.tprint(screen, f"Button {i:>2} value: {button}")
-            text_print.unindent()
-
-            hats = joystick.get_numhats()
-            text_print.tprint(screen, f"Number of hats: {hats}")
-            text_print.indent()
-
-            # Hat position. All or nothing for direction, not a float like
-            # get_axis(). Position is a tuple of int values (x, y).
-            for i in range(hats):
-                hat = joystick.get_hat(i)
-                text_print.tprint(screen, f"Hat {i} value: {str(hat)}")
-            text_print.unindent()
-
+            axis = joystick.get_axis(0)
+            button = joystick.get_button(0)
+            hat = joystick.get_hat(0)
             text_print.unindent()
 
         # Go ahead and update the screen with what we've drawn.
         pygame.display.flip()
-
+        pygame.event.pump()
         # Limit to 30 frames per second.
-        clock.tick(30)
+        clock.tick(60)
 
 
 if __name__ == "__main__":
     main()
-    # If you forget this line, the program will 'hang'
-    # on exit if running from IDLE.
+    ser.close
     pygame.quit()
