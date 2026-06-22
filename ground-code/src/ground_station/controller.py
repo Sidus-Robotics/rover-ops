@@ -12,44 +12,14 @@ os.environ["SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS"] = "1"
 
 pygame.init()
 pygame.joystick.init()
-ser = serial.Serial('/dev/ttyUSB1')
-
-
-# This is a simple class that will help us print to the screen.
-# It has nothing to do with the joysticks, just outputting the
-# information.
-class TextPrint:
-    def __init__(self):
-        self.reset()
-        self.font = pygame.font.Font(None, 25)
-
-    def tprint(self, screen, text):
-        text_bitmap = self.font.render(text, True, (0, 0, 0))
-        screen.blit(text_bitmap, (self.x, self.y))
-        self.y += self.line_height
-
-    def reset(self):
-        self.x = 10
-        self.y = 10
-        self.line_height = 15
-
-    def indent(self):
-        self.x += 10
-
-    def unindent(self):
-        self.x -= 10
+ser = serial.Serial('/dev/ttyUSB0')
 
 
 def main():
-    # Set the width and height of the screen (width, height), and name the window.
-    screen = pygame.display.set_mode((500, 700))
-    pygame.display.set_caption("Joystick example")
     ser.write(b'1.0')
     # Used to manage how fast the screen updates.
     clock = pygame.time.Clock()
 
-    # Get ready to print.
-    text_print = TextPrint()
 
     # This dict can be left as-is, since pygame will generate a
     # pygame.JOYDEVICEADDED event for every joystick connected
@@ -87,29 +57,24 @@ def main():
                 del joysticks[event.instance_id]
                 print(f"Joystick {event.instance_id} disconnected")
 
-        # Drawing step
-        # First, clear the screen to white. Don't put other drawing commands
-        # above this, or they will be erased with this command.
-        screen.fill((255, 255, 255))
-        text_print.reset()
-
         # For each joystick:
         for joystick in joysticks.values():
           
-            x_axis = round(joystick.get_axis(0), 3)
-            y_axis = round(joystick.get_axis(1), 3)
+            x_axis = round(joystick.get_axis(0), 1) + 0.0
+            y_axis = -1 * round(joystick.get_axis(1), 1) + 0.0
 
-            binary_payload = ''.join([str(x_axis), str(y_axis)]).encode('utf-8')
-            print(math.sqrt(pow(x_axis,2) + pow(y_axis,2)))
-            ser.write(bytes(binary_payload))
+            """Pack each variable into a 4 byte float.
+            Totoal 8 byte payload."""
+            binary_payload = struct.pack('<ff', x_axis, y_axis) 
+
+            print(f"Mag: {math.sqrt(pow(x_axis,2) + pow(y_axis,2))}\nX: {x_axis}\nY: {y_axis}\nbin: {binary_payload}")
+            ser.write(binary_payload)
 
             axis = joystick.get_axis(0)
             button = joystick.get_button(0)
             hat = joystick.get_hat(0)
-            text_print.unindent()
 
         # Go ahead and update the screen with what we've drawn.
-        pygame.display.flip()
         pygame.event.pump()
         # Limit to 30 frames per second.
         clock.tick(60)
