@@ -7,6 +7,8 @@ setup(
         'pygame',
         'websockets',
         'pyserial',
+        'fastapi',
+        'uvicorn'
     ],
     package_dir={'':'src'},
     packages=find_packages(where='src'),
