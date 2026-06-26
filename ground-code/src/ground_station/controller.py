@@ -16,7 +16,6 @@ ser = serial.Serial('/dev/ttyUSB0')
 
 
 def main():
-    ser.write(b'1.0')
     # Used to manage how fast the screen updates.
     clock = pygame.time.Clock()
 
@@ -59,13 +58,15 @@ def main():
 
         # For each joystick:
         for joystick in joysticks.values():
-          
+            
+            sync = 255
             x_axis = round(joystick.get_axis(0), 1) + 0.0
             y_axis = -1 * round(joystick.get_axis(1), 1) + 0.0
+            current_motor_speed = 0
 
             """Pack each variable into a 4 byte float.
-            Totoal 8 byte payload."""
-            binary_payload = struct.pack('<ff', x_axis, y_axis) 
+            With 1 byte Sync. Total 9 byte payload."""
+            binary_payload = struct.pack('<Bff', sync, x_axis, y_axis) 
 
             print(f"Mag: {math.sqrt(pow(x_axis,2) + pow(y_axis,2))}\nX: {x_axis}\nY: {y_axis}\nbin: {binary_payload}")
             ser.write(binary_payload)
@@ -77,7 +78,7 @@ def main():
         # Go ahead and update the screen with what we've drawn.
         pygame.event.pump()
         # Limit to 30 frames per second.
-        clock.tick(60)
+        clock.tick(120)
 
 
 if __name__ == "__main__":
