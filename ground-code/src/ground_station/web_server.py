@@ -66,6 +66,18 @@ class ConnectionManager:
             await connection.send_text(message)
 
 
+
+class WebSocket:
+    def __init__(self):
+        
+        pass
+
+    async def get():
+        return HTMLResponse(html)
+    async def websocket_endpoint( self ):
+        pass
+
+
 manager = ConnectionManager()
 
 @app.get("/")
