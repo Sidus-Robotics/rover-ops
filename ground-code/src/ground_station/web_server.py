@@ -1,9 +1,13 @@
-import typing
+from typing import Annotated
+from functools import lru_cache
+from pydantic_settings import BaseSettings
+from pydantic import BaseModel
 import os
 from fastapi import (
     FastAPI, 
     WebSocket,
-    WebSocketDisconnect
+    WebSocketDisconnect,
+    Depends
     )
 from fastapi.responses import HTMLResponse
 import uvicorn
@@ -61,28 +65,58 @@ class ConnectionManager:
     async def send_personal_message(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
 
-    async def broadcast(self, message: str):
-        for connection in self.active_connections:
-            await connection.send_text(message)
+    async def broadcast(self, message: str, client_id: str):
+        if client_id in self.active_connections:
+            await self.active_connections[client_id].send_text(message)
 
+class Item(BaseModel):
+    name: str
+    description: str | None
+    
 
+class Settings(BaseSettings):
+    app_name: str = "ground-control"
+    admin_email: str = "timl@mun.ca"
 
-class WebSocket:
+class WebSocketProcess:
     def __init__(self):
         
         pass
 
+    @app.get("/")
     async def get():
         return HTMLResponse(html)
+    
     async def websocket_endpoint( self ):
         pass
 
+    @app.post("/send-message/{client_id}")
+    async def send_message_to_client(client_id: str, message: str):
+        await manager.send_personal_message(message, client_id)
+        return {"status": "success", "message": "Message sent"}
 
 manager = ConnectionManager()
+
+@lru_cache
+def get_settings():
+    return Settings()
 
 @app.get("/")
 async def get():
     return HTMLResponse(html)
+
+"""Read data from this path."""
+@app.get("/info")
+async def info(settings: Annotated[Settings, Depends(get_settings)]):
+    return {
+        "app_name": settings.app_name,
+        "admin_email": settings.admin_email,
+    }
+
+@app.post("/send-message/{client_id}")
+async def send_message_to_client(client_id: str, message: str):
+    await manager.send_personal_message(message, client_id)
+    return {"status": "success", "message": "Message sent"}
 
 @app.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: int):
