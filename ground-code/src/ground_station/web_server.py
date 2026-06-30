@@ -51,6 +51,14 @@ html = """
 </html>
 """
 
+class Item(BaseModel):
+    name: str
+    description: str | None
+    
+class Settings(BaseSettings):
+    app_name: str = "ground-control"
+    admin_email: str = "timl@mun.ca"
+
 class ConnectionManager:
     def __init__(self):
         self.active_connections: list[WebSocket] = []
@@ -68,32 +76,6 @@ class ConnectionManager:
     async def broadcast(self, message: str, client_id: str):
         if client_id in self.active_connections:
             await self.active_connections[client_id].send_text(message)
-
-class Item(BaseModel):
-    name: str
-    description: str | None
-    
-
-class Settings(BaseSettings):
-    app_name: str = "ground-control"
-    admin_email: str = "timl@mun.ca"
-
-class WebSocketProcess:
-    def __init__(self):
-        
-        pass
-
-    @app.get("/")
-    async def get():
-        return HTMLResponse(html)
-    
-    async def websocket_endpoint( self ):
-        pass
-
-    @app.post("/send-message/{client_id}")
-    async def send_message_to_client(client_id: str, message: str):
-        await manager.send_personal_message(message, client_id)
-        return {"status": "success", "message": "Message sent"}
 
 manager = ConnectionManager()
 
