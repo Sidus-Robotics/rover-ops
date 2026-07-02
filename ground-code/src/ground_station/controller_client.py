@@ -15,7 +15,9 @@ import struct
 import math
 import platform
 
-from multiprocessing import Process, Queue
+from queue import Queue
+from threading import Thread
+# from multiprocessing import Process, Queue
 import itertools
 import json
 
@@ -35,11 +37,22 @@ if operating_sys == 'linux':
         'baud': 115200,
     }
 elif operating_sys == 'windows':
-    pass
+    config: Dict = {
+        'sync': 255,
+        'x_axis': 0,
+        'y_axis' :1,
+        'port': '/dev/ttyUSB0',
+        'baud': 115200,
+    }
 elif operating_sys == 'darwin':
-    pass
-
-class ControllerProcess(Process):
+    config: Dict = {
+        'sync': 255,
+        'x_axis': 0,
+        'y_axis' :1,
+        'port': '/dev/ttyUSB0',
+        'baud': 115200,
+    }
+class ControllerProcess(Thread):
     _joysticks: Dict
     _done = False
     _events: List[Event]
@@ -61,12 +74,16 @@ class ControllerProcess(Process):
                  controller = None, config: Dict = config, 
                  testing: str = False,
                  queue: Queue = None) -> None:
+        
         super().__init__()
+        pygame.init()
         if not pygame.joystick.get_init:
             pygame.joystick.init()
         
         if testing:
             self._serial_bus = Serial(port=config['port'], baudrate=config['baud'])
+        else:
+            self._serial_bus = None
 
         self._joysticks = joysticks
         self._controller = controller
@@ -78,12 +95,15 @@ class ControllerProcess(Process):
         self._testing = testing
 
         self._clock = pygame.time.Clock()
-        pygame.init()
     
-    def __exit__(self, exc_type, exc, tb):
-        self._serial_bus.close()
+    def __del__(self):
+        if self._testing:
+             self._serial_bus.close()
+        
+        if self._out_queue.full():
+                self._out_queue.task_done()
+   
         pygame.quit()
-        sys.exit()
         return False
     
     """Pivate methods used by this class."""
@@ -132,8 +152,6 @@ class ControllerProcess(Process):
         else:
             self._out_queue.put(self._binary_payload)
         
-
-
     def _time_step(self):
         pygame.event.pump()
         self._clock.tick(120)
@@ -155,32 +173,45 @@ class ControllerProcess(Process):
                 self._time_step()
 
         except Exception as e:
-            self.__exit__()
+            self.__del__()
             logging.warning(
                 f"{e}: ATTEMPTING RECONNECT."
             )
             time.sleep(1)
             self.run()
 
-class WebsocketProcess(Process):
+class WebsocketProcess(Thread):
     _in_queue: Queue
+    _uri: str
+    _websocket: ClientConnection
     def __init__(self, queue: Queue):
         super().__init__()
-        self._uri = 'ws://127.0.0.1:8000/controller-node'  
+        self._uri = 'ws://127.0.0.1:8000/controller-node'
         self._in_queue = queue
     
-    def test(self):
-        print("Test")
+    def __del__(self):
+        if self._in_queue.full():
+            self._in_queue.task_done()
+        self._websocket.close()
+        pygame.quit()
+        
+        return False
+
+    def _connect(self):
+        self._websocket = connect(self._uri)
 
     def run(self):
-        with connect(self._uri) as websocket:
-            while True:
-                try:
-                    msg = self._in_queue.get()
-                    print(msg)
-                    websocket.send(msg)
-                except Exception as e:
-                    print(e)
+            try:    
+                self._connect()
+                while True:
+                    msg: bytes = self._in_queue.get()
+                    self._websocket.send(msg)
+            except Exception as e:
+                self.__del__()
+                self._websocket.close()
+                time.sleep(1)
+                self.run()
+                logger.error(e)
 
 def test_joy():
     ground = ControllerProcess(config=config)  
@@ -198,7 +229,7 @@ def test_joy():
 
             ground._time_step()
     except Exception as e:
-        ground.__exit__
+        ground.__del__()
         logging.warning(
             f"{e}: ATTEMPTING RECONNECT."
         )

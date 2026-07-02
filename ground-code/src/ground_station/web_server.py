@@ -7,57 +7,48 @@ from fastapi import (
     FastAPI, 
     WebSocket,
     WebSocketDisconnect,
-    Depends
+    Depends,
+    APIRouter, 
     )
-from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.responses import HTMLResponse, JSONResponse
 import uvicorn
+
+"""
+POST: to create data.
+GET: to read data.
+PUT: to update data.
+DELETE: to delete data.
+"""
 
 app = FastAPI()
 
-html = """
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Chat</title>
-    </head>
-    <body>
-        <h1>WebSocket Chat</h1>
-        <h2>Your ID: <span id="ws-id"></span></h2>
-        <form action="" onsubmit="sendMessage(event)">
-            <input type="text" id="messageText" autocomplete="off"/>
-            <button>Send</button>
-        </form>
-        <ul id='messages'>
-        </ul>
-        <script>
-            var client_id = Date.now()
-            document.querySelector("#ws-id").textContent = client_id;
-            var ws = new WebSocket(`ws://localhost:8000/ws/${client_id}`);
-            ws.onmessage = function(event) {
-                var messages = document.getElementById('messages')
-                var message = document.createElement('li')
-                var content = document.createTextNode(event.data)
-                message.appendChild(content)
-                messages.appendChild(message)
-            };
-            function sendMessage(event) {
-                var input = document.getElementById("messageText")
-                ws.send(input.value)
-                input.value = ''
-                event.preventDefault()
-            }
-        </script>
-    </body>
-</html>
-"""
+origins= [
+    "http://127.0.0.1",
+    "http://localhost",
+    "http://localhost:8080"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.add_middleware(
+    TrustedHostMiddleware, 
+    allowed_hosts=["*"])
 
 class Item(BaseModel):
     name: str
     description: str | None
     
-class Settings(BaseSettings):
-    app_name: str = "ground-control"
-    admin_email: str = "timl@mun.ca"
+class Controls(BaseModel):
+    x: int
+    y: int
 
 class ConnectionManager:
     def __init__(self):
@@ -80,38 +71,33 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 @lru_cache
-def get_settings():
-    return Settings()
+def get_controls():
+    return Controls()
 
-@app.get("/")
+@app.get("/controller-node", response_model=Controls)
 async def get():
-    return HTMLResponse(html)
+    return JSONResponse({"x": 3, "y": 4})
 
-"""Read data from this path."""
-@app.get("/info")
-async def info(settings: Annotated[Settings, Depends(get_settings)]):
-    return {
-        "app_name": settings.app_name,
-        "admin_email": settings.admin_email,
-    }
+# @app.post("/send-message/{client_id}")
+# async def send_message_to_client(client_id: str, message: str):
+#     await manager.send_personal_message(message, client_id)
+#     return {"status": "success", "message": "Message sent"}
 
-@app.post("/send-message/{client_id}")
-async def send_message_to_client(client_id: str, message: str):
-    await manager.send_personal_message(message, client_id)
-    return {"status": "success", "message": "Message sent"}
-
-@app.websocket("/ws/{client_id}")
-async def websocket_endpoint(websocket: WebSocket, client_id: int):
-    await manager.connect(websocket)
+@app.websocket("/controller-node")
+async def websocket_endpoint(websocket: WebSocket):
+    # await manager.connect(websocket)
+    await websocket.accept()
     try:
         while True:
-            data = await websocket.receive_text()
-            await manager.send_personal_message(f"You wrote: {data}", websocket)
-            await manager.broadcast(f"Client #{client_id} says: {data}")
+            data: bytes = await websocket.receive_bytes()
+            # await manager.send_personal_message(f"You wrote: {data}", websocket)
+            # await manager.broadcast(f"Client #{client_id} says: {data}")
+            # await websocket.send_text(f"You said: {data}")
+            print(data)
     except WebSocketDisconnect:
         manager.disconnect(websocket)
-        await manager.broadcast(f"Client #{client_id} left the chat")
+        # await manager.broadcast(f"Client #{client_id} left the chat")
 
 
 if __name__ == "__main__":
-    uvicorn.run("web_server:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("web_server:app", host="127.0.0.1", port=8000, reload=True)

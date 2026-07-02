@@ -2,4 +2,4 @@
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 [tool.fastapi]
-entrypoint = "backend.main:app"
+entrypoint = "web_server:app"
