@@ -83,7 +83,7 @@ async def get():
 #     await manager.send_personal_message(message, client_id)
 #     return {"status": "success", "message": "Message sent"}
 
-@app.websocket("/controller-node")
+@app.websocket("/{client_id}")
 async def websocket_endpoint(websocket: WebSocket):
     # await manager.connect(websocket)
     await websocket.accept()

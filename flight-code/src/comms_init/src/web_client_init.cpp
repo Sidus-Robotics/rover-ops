@@ -23,8 +23,10 @@ class WebSocketNode: public rclcpp::Node{
         qos_profile_req.durability(rclcpp::DurabilityPolicy::TransientLocal);
 
         auto responseHandler = [this](std_msgs::msg::String::UniquePtr msg){
-            web_socket_.send(msg->data);
+            _web_socket.send(msg->data);
         };
+
+
         response_subscription_ = this->create_subscription<std_msgs::msg::String>("web_response", qos_profile_res, responseHandler);
 
         request_publisher_ = this->create_publisher<std_msgs::msg::String>("web_request", qos_profile_req);
@@ -40,13 +42,16 @@ class WebSocketNode: public rclcpp::Node{
     void webServerConnect() {
         //Establish Websocket connection
 
-        web_socket_.setUrl(URL);
-        web_socket_.setOnMessageCallback([this](const ix::WebSocketMessagePtr &msg){
+        _header["client-id"] = "rover-obc";
+
+        _web_socket.setUrl(URL);
+        _web_socket.setExtraHeaders(_header);
+        _web_socket.setOnMessageCallback([this](const ix::WebSocketMessagePtr &msg){
             this->webServerHandler(msg);
         });
-        web_socket_.start();
+        _web_socket.start();
         std::string test_msg = "Testing connect...";
-        web_socket_.send(test_msg);
+        _web_socket.send(test_msg);
         RCLCPP_INFO(this->get_logger(), "websocket started on '%s'.", URL);
 
         return;
@@ -70,14 +75,15 @@ class WebSocketNode: public rclcpp::Node{
 
     void webConnectionCleanup() {
         //TODO add cleanup aka destroy the connection cleanly.
-        web_socket_.stop(1000, "Normal Closure.");
+        _web_socket.stop(1000, "Normal Closure.");
         return;
     };
 
     private:
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr request_publisher_;
     rclcpp::Subscription<std_msgs::msg::String>::SharedPtr response_subscription_;
-    ix::WebSocket web_socket_;
+    ix::WebSocket _web_socket;
+    ix::WebSocketHttpHeaders _header;
 
 };
 
