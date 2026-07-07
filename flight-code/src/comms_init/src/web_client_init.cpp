@@ -10,6 +10,13 @@
 
 #include <ixwebsocket/IXWebSocket.h>
 class WebSocketNode: public rclcpp::Node{
+    
+    private:
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr request_publisher_;
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr response_subscription_;
+    ix::WebSocket _web_socket;
+    ix::WebSocketHttpHeaders _header;
+
     public:
     WebSocketNode() : Node("websocket_node") {
         //TODO: Make custom QoS profile
@@ -78,12 +85,6 @@ class WebSocketNode: public rclcpp::Node{
         _web_socket.stop(1000, "Normal Closure.");
         return;
     };
-
-    private:
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr request_publisher_;
-    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr response_subscription_;
-    ix::WebSocket _web_socket;
-    ix::WebSocketHttpHeaders _header;
 
 };
 
