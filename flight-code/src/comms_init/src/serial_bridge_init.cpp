@@ -11,6 +11,7 @@
 class USBSerial : public rclcpp::Node
 {
     private:
+    
     public:
     USBSerial() : Node("usb-serial")
     {

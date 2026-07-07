@@ -2,6 +2,7 @@
 #include "comms_init/web_client_init.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
+#include "comms_init/events.hpp"
 
 // Uses
 #include <vector>
@@ -10,9 +11,9 @@
 
 #include <ixwebsocket/IXWebSocket.h>
 class WebSocketNode: public rclcpp::Node{
-    
+
     private:
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr request_publisher_;
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr _request_publisher;
     rclcpp::Subscription<std_msgs::msg::String>::SharedPtr response_subscription_;
     ix::WebSocket _web_socket;
     ix::WebSocketHttpHeaders _header;
@@ -36,7 +37,7 @@ class WebSocketNode: public rclcpp::Node{
 
         response_subscription_ = this->create_subscription<std_msgs::msg::String>("web_response", qos_profile_res, responseHandler);
 
-        request_publisher_ = this->create_publisher<std_msgs::msg::String>("web_request", qos_profile_req);
+        _request_publisher = this->create_publisher<std_msgs::msg::String>("web_request", qos_profile_req);
         RCLCPP_INFO(this->get_logger(), "web_request node started.");
 
         webServerConnect();
@@ -75,7 +76,7 @@ class WebSocketNode: public rclcpp::Node{
 
                 request_message.data = msg->str;
 
-                this->request_publisher_->publish(request_message);
+                this->_request_publisher->publish(request_message);
             }
         return;
     };

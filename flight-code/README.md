@@ -15,6 +15,12 @@ cmake ..
 make -j$(nproc)
 sudo make install
 ```
+
+
+```sudo apt update
+sudo apt install libgps-dev
+```
+
 TODO: Update this section
 
 
