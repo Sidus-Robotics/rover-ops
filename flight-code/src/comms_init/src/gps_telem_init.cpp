@@ -4,14 +4,13 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "comms_init/events.hpp"
-
+#include "comms_init/events.hpp"
+#include "sensor_msgs/msg/nav_sat_fix.hpp"
 // Uses
 #include <vector>
 #include <memory>
 #include <chrono>
 #include <libgpsmm.h>
-
-// TODO: Create custom GPS telem msg interface.
 
 class GpsTelemNode : public rclcpp::Node 
 {   
@@ -19,6 +18,7 @@ class GpsTelemNode : public rclcpp::Node
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr _gps_publisher;
     std::unique_ptr<std_msgs::msg::String> _gps_telem;
     rclcpp::TimerBase::SharedPtr _timer;
+    gpsmm gps_rec("localhost", GPSD_PORT);
 
     public:
     GpsTelemNode() : Node("gps-node") {
@@ -37,15 +37,15 @@ class GpsTelemNode : public rclcpp::Node
 
     }
 
-    void gpsTelemProcess
+    void gpsTelemProcess()
     {
-
-    }
+        return;
+    };
 
     void gpsNodeCleanup()
     {
         return;
-    }
+    };
 };
 
 
