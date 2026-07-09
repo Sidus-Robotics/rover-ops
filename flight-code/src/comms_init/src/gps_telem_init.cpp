@@ -6,6 +6,7 @@
 #include "comms_init/events.hpp"
 #include "comms_init/events.hpp"
 #include "sensor_msgs/msg/nav_sat_fix.hpp"
+#include "sensor_msgs/msg/nav_sat_status.hpp"
 
 // Uses
 #include <vector>
@@ -14,17 +15,38 @@
 #include <chrono>
 #include <libgpsmm.h>
 
+// TODO: Move to a header.
+#define SharedPublisher(TYPE, NAME) \
+    typedef struct sharedPublisher { \
+        TYPE pub; \
+    } sharedPublisher_##NAME
+
+#define UniquePtr(TYPE, CAST) \
+    typedef struct uniquePtr { \
+        std::unique_ptr<##TYPE> ptr; \
+    } unique_##CAST
+
+typedef sensor_msgs::msg::NavSatFix NavSatFix;
+typedef sensor_msgs::msg::NavSatStatus NavSatStatus;
+
+SharedPublisher(rclcpp::Publisher<NavSatFix>::SharedPtr, gps);
+UniquePtr(NavSatFix, navSatFix);
+UniquePtr(NavSatStatus, navSatStatus);
+
+
 // For the timer period.
 using namespace std::chrono_literals;
 class GpsTelemNode : public rclcpp::Node 
 {   
     private:
-    rclcpp::Publisher<sensor_msgs::msg::NavSatFix>::SharedPtr _gps_publisher;
-    std::shared_ptr<sensor_msgs::msg::NavSatFix> _gps_telem;
+    sharedPublisher_gps _gps_publisher;
+    unique_navSatFix _gps_telem;
+    unique_navSatStatus _gps_status;
+
     rclcpp::TimerBase::SharedPtr _timer;
     std::chrono::milliseconds _period;
 
-    gpsmm gps_rec("localhost", GPSD_PORT);
+    // gpsmm gps_rec("localhost", GPSD_PORT);
 
     public:
     GpsTelemNode() : Node("gps-node") {
@@ -36,19 +58,15 @@ class GpsTelemNode : public rclcpp::Node
 
         auto publish_gps_telem = [this]() -> void 
         {
-            _gps_telem = std::make_shared<sensor_msgs::msg::NavSatFix>();
-            gpsTelemProcess(_gps_telem);
-            auto _msg = std::make_unique<sensor_msgs::msg::NavSatFix>(std::(_gps_telem->latitude));
-            // Populate data fields
-            _gps_telem->latitude = 0.0;
-            _gps_telem->longitude = 0.0;
-
-            _gps_publisher->publish(_gps_telem);
+            _gps_telem.ptr = std::make_unique<NavSatFix>();
+            gpsTelemProcess(_gps_telem.ptr);
+    
+            _gps_publisher.pub->publish(std::move(_gps_telem.ptr));
 
         };
 
         _period = 5ms;
-        _gps_publisher = this->create_publisher<sensor_msgs::msg::NavSatFix>("gps-telem", qos_profile);
+        _gps_publisher.pub = this->create_publisher<NavSatFix>("gps-telem", qos_profile);
         _timer = this->create_wall_timer(_period, publish_gps_telem);
         
     }
@@ -57,8 +75,11 @@ class GpsTelemNode : public rclcpp::Node
 
     }
 
-    void gpsTelemProcess(std::shared_ptr<sensor_msgs::msg::NavSatFix> &gps_ref)
+    void gpsTelemProcess(std::unique_ptr<sensor_msgs::msg::NavSatFix> &gps_ref)
     {
+        // Populate data fields
+        _gps_telem.ptr->latitude = 0.0;
+        _gps_telem.ptr->longitude = 0.0;
         return;
     };
 
