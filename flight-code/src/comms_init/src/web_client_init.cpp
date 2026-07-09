@@ -1,7 +1,4 @@
 // Implements
-#include "comms_init/web_client_init.hpp"
-#include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
 #include "comms_init/events.hpp"
 
 // Uses
@@ -13,8 +10,8 @@
 class WebSocketNode: public rclcpp::Node{
 
     private:
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr _request_publisher;
-    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr response_subscription_;
+    rclcpp::Publisher<String>::SharedPtr _request_publisher;
+    rclcpp::Subscription<String>::SharedPtr response_subscription_;
     ix::WebSocket _web_socket;
     ix::WebSocketHttpHeaders _header;
 
@@ -30,13 +27,13 @@ class WebSocketNode: public rclcpp::Node{
         qos_profile_req.reliability(rclcpp::ReliabilityPolicy::BestEffort);
         qos_profile_req.durability(rclcpp::DurabilityPolicy::TransientLocal);
 
-        auto responseHandler = [this](std_msgs::msg::String::UniquePtr msg){
+        auto responseHandler = [this](String::UniquePtr msg){
             _web_socket.send(msg->data);
         };
 
 
-        response_subscription_ = this->create_subscription<std_msgs::msg::String>("web_response", qos_profile_res, responseHandler);
-        _request_publisher = this->create_publisher<std_msgs::msg::String>("web_request", qos_profile_req);
+        response_subscription_ = this->create_subscription<String>("web_response", qos_profile_res, responseHandler);
+        _request_publisher = this->create_publisher<String>("web_request", qos_profile_req);
         RCLCPP_INFO(this->get_logger(), "web_request node started.");
 
         webServerConnect();
@@ -71,7 +68,7 @@ class WebSocketNode: public rclcpp::Node{
 
                 //Change types
                 
-                std_msgs::msg::String request_message;
+                String request_message;
 
                 request_message.data = msg->str;
 

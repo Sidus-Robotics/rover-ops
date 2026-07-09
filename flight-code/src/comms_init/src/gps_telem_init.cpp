@@ -24,8 +24,8 @@ class GpsTelemNode : public rclcpp::Node
     unique_navSatFix _gps_telem;
     unique_navSatStatus _gps_status;
 
-    rclcpp::TimerBase::SharedPtr _timer;
-    std::chrono::milliseconds _period;
+    clock_gps _clock;
+    Milliseconds _period;
 
     // gpsmm gps_rec("localhost", GPSD_PORT);
 
@@ -40,7 +40,7 @@ class GpsTelemNode : public rclcpp::Node
         auto publish_gps_telem = [this]() -> void 
         {
             _gps_telem.ptr = std::make_unique<NavSatFix>();
-            gpsTelemProcess(_gps_telem.ptr);
+            gpsTelemProcess(_gps_telem);
     
             _gps_publisher.pub->publish(std::move(_gps_telem.ptr));
 
@@ -48,7 +48,7 @@ class GpsTelemNode : public rclcpp::Node
 
         _period = 5ms;
         _gps_publisher.pub = this->create_publisher<NavSatFix>("gps-telem", qos_profile);
-        _timer = this->create_wall_timer(_period, publish_gps_telem);
+        _clock.timer = this->create_wall_timer(_period, publish_gps_telem);
         
     }
 
@@ -56,11 +56,11 @@ class GpsTelemNode : public rclcpp::Node
 
     }
 
-    void gpsTelemProcess(std::unique_ptr<sensor_msgs::msg::NavSatFix> &gps_ref)
+    void gpsTelemProcess(unique_navSatFix &gps_ref)
     {
         // Populate data fields
-        _gps_telem.ptr->latitude = 0.0;
-        _gps_telem.ptr->longitude = 0.0;
+        gps_ref.ptr->latitude = 0.0;
+        gps_ref.ptr->longitude = 0.0;
         return;
     };
 
