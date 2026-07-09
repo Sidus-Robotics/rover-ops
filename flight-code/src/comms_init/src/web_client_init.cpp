@@ -36,7 +36,6 @@ class WebSocketNode: public rclcpp::Node{
 
 
         response_subscription_ = this->create_subscription<std_msgs::msg::String>("web_response", qos_profile_res, responseHandler);
-
         _request_publisher = this->create_publisher<std_msgs::msg::String>("web_request", qos_profile_req);
         RCLCPP_INFO(this->get_logger(), "web_request node started.");
 

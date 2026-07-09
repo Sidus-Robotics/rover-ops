@@ -4,9 +4,8 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "comms_init/events.hpp"
-#include "comms_init/events.hpp"
-#include "sensor_msgs/msg/nav_sat_fix.hpp"
-#include "sensor_msgs/msg/nav_sat_status.hpp"
+#include "comms_init/ros_decl.hpp"
+#include "comms_init/gps_telem_init.hpp"
 
 // Uses
 #include <vector>
@@ -14,24 +13,6 @@
 #include <utility>
 #include <chrono>
 #include <libgpsmm.h>
-
-// TODO: Move to a header.
-#define SharedPublisher(TYPE, NAME) \
-    typedef struct sharedPublisher { \
-        TYPE pub; \
-    } sharedPublisher_##NAME
-
-#define UniquePtr(TYPE, CAST) \
-    typedef struct uniquePtr { \
-        std::unique_ptr<##TYPE> ptr; \
-    } unique_##CAST
-
-typedef sensor_msgs::msg::NavSatFix NavSatFix;
-typedef sensor_msgs::msg::NavSatStatus NavSatStatus;
-
-SharedPublisher(rclcpp::Publisher<NavSatFix>::SharedPtr, gps);
-UniquePtr(NavSatFix, navSatFix);
-UniquePtr(NavSatStatus, navSatStatus);
 
 
 // For the timer period.
