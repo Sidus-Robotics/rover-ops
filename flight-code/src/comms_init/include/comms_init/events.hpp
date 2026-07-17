@@ -10,7 +10,7 @@
 
 #include <chrono>
 
-#define GPSD_PORT = 8080
+#define GPSD_PORT 8080
 #define URL "ws://127.0.0.1:8000/rover-obc"
 
 typedef sensor_msgs::msg::NavSatFix NavSatFix;

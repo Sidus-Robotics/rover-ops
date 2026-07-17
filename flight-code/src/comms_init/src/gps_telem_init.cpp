@@ -27,7 +27,7 @@ class GpsTelemNode : public rclcpp::Node
     clock_gps _clock;
     Milliseconds _period;
 
-    // gpsmm gps_rec("localhost", GPSD_PORT);
+    gpsmm gps_rec("localhost", GPSD_PORT);
 
     public:
     GpsTelemNode() : Node("gps-node") {

@@ -14,6 +14,9 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(ixwebsocket REQUIRED)
 
+# set(SRC_FILES main.cpp serialib.cpp)
+# add_executable(your_project_name ${SRC_FILES})
+
 add_executable(web_client_init src/web_client_init.cpp)
 
 target_include_directories(web_client_init PUBLIC
