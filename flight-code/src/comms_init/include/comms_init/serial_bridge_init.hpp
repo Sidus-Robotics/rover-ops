@@ -3,7 +3,15 @@
 
 #include "events.hpp"
 #include "ros_decl.hpp"
+#include "CppLinuxSerial/SerialPort.hpp"
 
-SharedSubscriber(rclcpp::Subscription<Byte>::SharedPtr, serial);
+SharedSubscriber(Joystick, serial);
+
+typedef mn::CppLinuxSerial::SerialPort SerialPort;
+typedef mn::CppLinuxSerial::BaudRate BaudRate;
+
+#define BAUDRATE 115200
+#define SERIAL_PORT "/dev/ttyUSB0"
+
 
 #endif

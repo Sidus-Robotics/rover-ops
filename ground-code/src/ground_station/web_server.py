@@ -1,4 +1,5 @@
 from typing import Annotated
+import logging
 from functools import lru_cache
 from pydantic_settings import BaseSettings
 from pydantic import BaseModel
@@ -52,19 +53,23 @@ class Controls(BaseModel):
 
 class ConnectionManager:
     def __init__(self):
-        self.active_connections: list[WebSocket] = []
+        self.active_connections: dict[WebSocket] = {}
 
-    async def connect(self, websocket: WebSocket):
+    async def connect(self,client_id: str, websocket: WebSocket):
         await websocket.accept()
-        self.active_connections.append(websocket)
+        self.active_connections[client_id] = websocket
 
-    def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
+    def disconnect(self, client_id: str):
+        self.active_connections.pop(client_id)
 
-    async def send_personal_message(self, message: str, websocket: WebSocket):
-        await websocket.send_text(message)
+    async def send_personal_message(self, client_id: str, message: str | bytes):
+        if client_id == "controller-node":
+            ws: WebSocket = self.active_connections["rover-obc"]
+            await ws.send_bytes(message)
+        else:
+            await print("No connect.")
 
-    async def broadcast(self, message: str, client_id: str):
+    async def broadcast(self, message: bytes, client_id: str):
         if client_id in self.active_connections:
             await self.active_connections[client_id].send_text(message)
 
@@ -82,22 +87,27 @@ async def get():
 # async def send_message_to_client(client_id: str, message: str):
 #     await manager.send_personal_message(message, client_id)
 #     return {"status": "success", "message": "Message sent"}
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 @app.websocket("/{client_id}")
-async def websocket_endpoint(websocket: WebSocket):
-    # await manager.connect(websocket)
-    await websocket.accept()
+async def websocket_endpoint(websocket: WebSocket, client_id: str):
+    await manager.connect(client_id, websocket)
+    # await websocket.accept()
     try:
         while True:
+            # data = await websocket.receive_text()
+         
             data: bytes = await websocket.receive_bytes()
-            # await manager.send_personal_message(f"You wrote: {data}", websocket)
-            # await manager.broadcast(f"Client #{client_id} says: {data}")
+            await manager.send_personal_message(client_id, data)
+            # await manager.broadcast(client_id="rover-obc", message=data)
             # await websocket.send_text(f"You said: {data}")
-            print(data)
+            # logger.info(manager.active_connections)
+            pass
     except WebSocketDisconnect:
-        manager.disconnect(websocket)
+        manager.disconnect(client_id)
+        logger.info(f"{client_id} left.")
         # await manager.broadcast(f"Client #{client_id} left the chat")
-
 
 if __name__ == "__main__":
     uvicorn.run("web_server:app", host="127.0.0.1", port=8000, reload=True)

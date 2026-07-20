@@ -1,16 +1,18 @@
 #ifndef ROS_DECL
 #define ROS_DECL
 
+#include "rclcpp/rclcpp.hpp"
+
 /**
  * @brief Creates a rclcpp::Publisher<TYPE_CAST> type name.
  * @param TYPE The type cast.
  * @param NAME The identifier.
  * 
- * Example:
+ * Example: 'SharedPublisher(rclcpp::Publisher<NavSatFix>::SharedPtr, gps)' will make 'sharedPublisher_gps'
  */
 #define SharedPublisher(TYPE, NAME) \
     typedef struct sharedPublisher { \
-        TYPE pub; \
+        rclcpp::Publisher<TYPE>::SharedPtr pub; \
     } sharedPublisher_##NAME
 
 /**
@@ -18,11 +20,11 @@
  * @param TYPE The type cast.
  * @param NAME The identifier.
  * 
- * Example:
+ * Example: 'SharedSubscriber(rclcpp::Subscriber<Byte>::SharedPtr, serial)' will make 'sharedSubscriber_serial'
  */
 #define SharedSubscriber(TYPE, NAME) \
     typedef struct sharedSubscriber { \
-        TYPE sub; \
+         rclcpp::Subscription<TYPE>::SharedPtr sub; \
     } sharedSubscriber_##NAME
 
 
@@ -31,7 +33,7 @@
  * @param TYPE The type cast.
  * @param NAME The identifier.
  * 
- * Example:
+ * Example: 'UniquePtr(NavSatFix, navSatFix)' will make 'unique_navSatFix'
  */
 #define UniquePtr(TYPE, NAME) \
     typedef struct uniquePtr { \
@@ -43,7 +45,7 @@
  * @param TYPE The type cast
  * @param NAME The identifier
  * 
- * Example:
+ * Example: 'SharedPtr(NavSatFix, naxSatFix)' will make 'shared_navSatFix'
  */
 #define SharedPtr(TYPE, NAME) \
     typedef struct sharedPtr { \
@@ -55,7 +57,7 @@
  * @param TYPE The type cast
  * @param NAME The identifier
  * 
- * Example:
+ * Example: 'WeakPtr(NavSatFix, naxSatFix)' will make 'weak_navSatFix'
  */
 #define WeakPtr(TYPE, NAME) \
     typedef struct weakPtr { \
@@ -66,7 +68,7 @@
  * @brief Creates a rclcpp::TimerBase::SharedPtr type name
  * @param NAME The identifer
  * 
- * Example:
+ * Example: 'SharedTimer(gps)' will make 'clock_gps'
  */
 #define SharedTimer(NAME) \
     typedef struct sharedTimer { \

@@ -1,5 +1,7 @@
 // Implements
 #include "comms_init/events.hpp"
+#include "comms_init/web_client_init.hpp"
+
 
 // Uses
 #include <vector>
@@ -10,8 +12,13 @@
 class WebSocketNode: public rclcpp::Node{
 
     private:
+    // FOR GUI
     rclcpp::Publisher<String>::SharedPtr _request_publisher;
-    rclcpp::Subscription<String>::SharedPtr response_subscription_;
+    rclcpp::Subscription<String>::SharedPtr _response_subscription_;
+
+    // FOR ROVER OBC
+    sharedPublisher_serial _serial_publisher;
+
     ix::WebSocket _web_socket;
     ix::WebSocketHttpHeaders _header;
 
@@ -32,9 +39,13 @@ class WebSocketNode: public rclcpp::Node{
         };
 
 
-        response_subscription_ = this->create_subscription<String>("web_response", qos_profile_res, responseHandler);
+        _response_subscription_ = this->create_subscription<String>("web_response", qos_profile_res, responseHandler);
+
         _request_publisher = this->create_publisher<String>("web_request", qos_profile_req);
+        _serial_publisher.pub = this->create_publisher<Joystick>("serial_request", qos_profile_req);
+
         RCLCPP_INFO(this->get_logger(), "web_request node started.");
+        RCLCPP_INFO(this->get_logger(), "serial_request node started.");
 
         webServerConnect();
     }
@@ -46,10 +57,10 @@ class WebSocketNode: public rclcpp::Node{
     void webServerConnect() {
         //Establish Websocket connection
 
-        _header["client-id"] = "rover-obc";
+        // _header["client-id"] = "rover-obc";
 
         _web_socket.setUrl(URL);
-        _web_socket.setExtraHeaders(_header);
+        // _web_socket.setExtraHeaders(_header);
         _web_socket.setOnMessageCallback([this](const ix::WebSocketMessagePtr &msg){
             this->webServerHandler(msg);
         });
@@ -61,18 +72,24 @@ class WebSocketNode: public rclcpp::Node{
         return;
     }
 
-    void webServerHandler(const ix::WebSocketMessagePtr& msg) {
+    void webServerHandler(const ix::WebSocketMessagePtr &msg) {
         if (msg->type == ix::WebSocketMessageType::Message)
-            {
-                RCLCPP_INFO(this->get_logger(), "I heard: '%s'", msg->str.c_str());
+            {   
+               
 
                 //Change types
                 
-                String request_message;
+                Joystick request_message;
+                
+                // Adds the values from the message to the ros2 interface for a Joystick
+                for (uint8_t index = 0u; index < msg->str.size(); index++)
+                {   
+                    char value = msg->str[index];
+                    request_message.axes.push_back(value);
+                };
+            
 
-                request_message.data = msg->str;
-
-                this->_request_publisher->publish(request_message);
+                _serial_publisher.pub->publish(request_message);
             }
         return;
     };

@@ -4,7 +4,7 @@
 #include "events.hpp"
 #include "ros_decl.hpp"
 
-SharedPublisher(rclcpp::Publisher<NavSatFix>::SharedPtr, gps);
+SharedPublisher(NavSatFix, gps);
 UniquePtr(NavSatFix, navSatFix);
 UniquePtr(NavSatStatus, navSatStatus);
 

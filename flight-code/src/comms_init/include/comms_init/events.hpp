@@ -5,6 +5,7 @@
 #include "sensor_msgs/msg/nav_sat_status.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "std_msgs/msg/byte.hpp"
+#include "rover_interfaces/msg/controller.hpp"
 
 #include "ros_decl.hpp"
 
@@ -19,13 +20,16 @@ typedef sensor_msgs::msg::NavSatStatus NavSatStatus;
 /**
  * @brief std_msgs::msg::String
  * 
+ * This is a temporary solution. All std_msgs interfaces are deprecated since Foxy.
  */
 typedef std_msgs::msg::String String;
 
 /**
- * @brief std_msgs::msg::Byte
+ * @brief rover_interfaces::msg::Controller
+ * 
+ * float32[] axes and int32[] buttons
  */
-typedef std_msgs::msg::Byte Byte;
+typedef rover_interfaces::msg::Controller Joystick;
 
 typedef std::chrono::milliseconds Milliseconds;
 
