@@ -1,10 +1,9 @@
-#ifndef web_client_init
+#ifndef WEB_CLIENT_INIT
+#define WEB_CLIENT_INIT
 
-#define URL "ws://127.0.0.1:8000/"
+#include "events.hpp"
+#include "ros_decl.hpp"
 
-/*
-* @brief 
-* @param
-*/
+SharedPublisher(Joystick, serial);
 
 #endif

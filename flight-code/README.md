@@ -15,8 +15,16 @@ cmake ..
 make -j$(nproc)
 sudo make install
 ```
+
+
+```sudo apt update
+sudo apt install libgps-dev
+```
+
 TODO: Update this section
 
 
 https://github.com/RobotWebTools/web_video_server
 https://github.com/christianrauch/camera_ros
+
+https://github.com/imabot2/serialib/blob/master/lib/serialib.cpp

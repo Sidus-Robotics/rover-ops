@@ -15,12 +15,15 @@ import struct
 import math
 import platform
 
-from multiprocessing import Process, Queue
+from queue import Queue
+from threading import Thread
+# from multiprocessing import Process, Queue
 import itertools
 import json
 
+from websockets import State
 from websockets.sync.client import ClientConnection, connect
-from websockets.exceptions import ConnectionClosedOK, ConnectionClosed
+from websockets.exceptions import ConnectionClosed,InvalidMessage
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -35,11 +38,22 @@ if operating_sys == 'linux':
         'baud': 115200,
     }
 elif operating_sys == 'windows':
-    pass
+    config: Dict = {
+        'sync': 255,
+        'x_axis': 0,
+        'y_axis' :1,
+        'port': '/dev/ttyUSB0',
+        'baud': 115200,
+    }
 elif operating_sys == 'darwin':
-    pass
-
-class ControllerProcess:
+    config: Dict = {
+        'sync': 255,
+        'x_axis': 0,
+        'y_axis' :1,
+        'port': '/dev/ttyUSB0',
+        'baud': 115200,
+    }
+class ControllerProcess(Thread):
     _joysticks: Dict
     _done = False
     _events: List[Event]
@@ -48,17 +62,30 @@ class ControllerProcess:
     _controller_x_axis: int 
     _controller_y_axis: int
     _sync: int
-    _binary_payload: bytes
+    _payload: bytes
     _x: int
     _y: int
     _serial_bus: Serial
 
+    _out_queue : Queue
+
     _testing: bool
 
-    def __init__(self, joysticks: Dict = {}, controller = None, config: Dict = config, testing: str = False) -> None:
+    def __init__(
+            self, joysticks: Dict = {}, 
+            controller = None, config: Dict = config, 
+            testing: bool = False,
+            queue: Queue = None) -> None:
+        
+        super().__init__()
+        pygame.init()
         if not pygame.joystick.get_init:
             pygame.joystick.init()
-        self._serial_bus = Serial(port=config['port'], baudrate=config['baud'])
+        
+        if testing:
+            self._serial_bus = Serial(port=config['port'], baudrate=config['baud'])
+        else:
+            self._serial_bus = None
 
         self._joysticks = joysticks
         self._controller = controller
@@ -66,16 +93,19 @@ class ControllerProcess:
         self._controller_x_axis = config['x_axis']
         self._controller_y_axis = config['y_axis']
         self._sync =  config['sync']
-
+        self._out_queue = queue
         self._testing = testing
 
         self._clock = pygame.time.Clock()
-        pygame.init()
     
-    def __exit__(self, exc_type, exc, tb):
-        self._serial_bus.close()
+    def __del__(self):
+        if self._testing:
+             self._serial_bus.close()
+        
+        if self._out_queue.full():
+                self._out_queue.task_done()
+   
         pygame.quit()
-        sys.exit()
         return False
     
     """Pivate methods used by this class."""
@@ -112,66 +142,91 @@ class ControllerProcess:
         
         self._x = x
         self._y = y
-        self._binary_payload = struct.pack('<Bff', self._sync, self._x, self._y)
-        logger.info(f"Mag: {math.sqrt(pow(self._x,2) + pow(self._y,2))}\nX: {self._x}\nY: {self._y}\nbin: {self._binary_payload}")
-        return self._binary_payload
+        self._payload = struct.pack('<Bff', self._sync, self._x, self._y)
+        
+        if self._testing:
+            logger.info(f"Mag: {math.sqrt(pow(self._x,2) + pow(self._y,2))}\nX: {self._x}\nY: {self._y}\nbin: {self._payload}")
     
     def _send_payload(self):
         """Writes the packet to the bus."""
         if self._testing:
-            self._serial_bus.write(self._binary_payload)
+            self._serial_bus.write(self._payload)
+        else:
+            self._out_queue.put(self._payload)
         
-
-
     def _time_step(self):
         pygame.event.pump()
         self._clock.tick(120)
 
     """Public methods to be used outside."""
-    def run(self, queue: Queue):
-        """Runs in an loop."""
+    def run(self):
+        """Runs in an loop. Overrides BaseProcess run()."""
         try:
             while True:
                 self._find_events()
 
                 if self._controller == None:
+                    logger.debug("CONTROLLER NEEDS CONNECT.")
                     self._get_controller()
                     self._set_controller()
 
                 if self._controller != None:
                     self._get_payload()
                     self._send_payload()
-
                 self._time_step()
-        except Exception as e:
-            self.__exit__
-            logging.warning(
-                f"{e}: ATTEMPTING RECONNECT."
-            )
+
+        except Exception:
+            self.__del__()
             time.sleep(1)
             self.run()
 
-class WebsocketProcess:
-    def __init__(self):
-        self._uri = 'ws://127.0.0.1:8000/controller-node'  
-
-    def _keep_alive(self, websocket: ClientConnection, ping_interval: int):
-        """Might not need this."""
-        for ping in itertools.count():
-            time.sleep(ping_interval)
-
-            try:
-                websocket.send(json.dumps({"ping": ping}))
-            except ConnectionClosed:
-                break
+class WebsocketProcess(Thread):
+    _in_queue: Queue
+    _uri: str
+    _websocket: ClientConnection
+    def __init__(self, queue: Queue):
+        super().__init__()
+        self._uri = 'ws://127.0.0.1:8000/controller-node'
+        self._in_queue = queue
+        self._websocket = None
     
-    def run(self, queue: Queue):
-        with connect(self._uri) as websocket:
+    def __del__(self):
+        if self._in_queue.full():
+            self._in_queue.task_done()
+        self._websocket.close()
+        pygame.quit()
+        
+        return False
+
+    def _connect(self):
+        self._websocket = connect(self._uri)
+
+    def run(self):
             while True:
-                try:
-                    websocket.send("test")
-                except Exception as e:
-                    print(e)
+                try:    
+                    if self._websocket == None:
+                        self._connect()
+
+                    msg: bytes = self._in_queue.get()
+                    self._websocket.send(msg)
+                except ConnectionRefusedError:
+                    logging.warning(
+                    f"ATTEMPTING RECONNECT."
+                    )
+                    # self._connect()
+                    # time.sleep(1)
+                    # self.run()
+                    time.sleep(1)
+                except ConnectionClosed:
+                    logging.warning(
+                    f"CONNECTION CLOSED: ATTEMPTING RECONNECT."
+                    )
+                    self._connect()
+                    time.sleep(1)
+                except KeyboardInterrupt:
+                    self.__del__()
+                    self._websocket.close()
+                    time.sleep(1)
 
 def test_joy():
     ground = ControllerProcess(config=config)  
@@ -189,7 +244,7 @@ def test_joy():
 
             ground._time_step()
     except Exception as e:
-        ground.__exit__
+        ground.__del__()
         logging.warning(
             f"{e}: ATTEMPTING RECONNECT."
         )
@@ -197,16 +252,16 @@ def test_joy():
         test_joy()
 
 if __name__ == "__main__":
-    ground = ControllerProcess(config=config, testing=True)
-    ws = WebsocketProcess()  
+     
 
     controller_queue = Queue()
 
-    controller_process = Process(target=ground.run, args=(controller_queue,))
-    web_client = Process(target=ws.run, args=(controller_queue,))
+    controller_worker = ControllerProcess(config=config, queue=controller_queue)
+    web_client_worker = WebsocketProcess(queue=controller_queue) 
+ 
     
-    controller_process.start()
-    web_client.start()
+    controller_worker.start()
+    web_client_worker.start()
 
-    controller_process.join()
-    web_client.join()
+    controller_worker.join()
+    web_client_worker.join()
