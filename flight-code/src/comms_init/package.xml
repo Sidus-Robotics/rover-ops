@@ -13,6 +13,7 @@
   <depend>IXWebSocket</depend>
   <depend>sensor_msgs</depend>
   <depend>CppLinuxSerial</depend>
+  <depend>Threads</depend>
   <depend>rover_interfaces</depend>
 
 
