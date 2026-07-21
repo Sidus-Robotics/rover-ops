@@ -60,7 +60,7 @@ target_link_libraries(web_client_init
 )
 
 target_link_libraries(serial_bridge_init
-  Threads
+  Threads::Threads
   CppLinuxSerial
 )
 
