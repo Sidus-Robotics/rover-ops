@@ -12,7 +12,9 @@
 #include <chrono>
 
 #define GPSD_PORT 8080
-#define URL "ws://127.0.0.1:8000/rover-obc"
+
+// Rovers Bullet AC Static IP
+#define URL "ws://192.168.1.19:8000/rover-obc"
 
 typedef sensor_msgs::msg::NavSatFix NavSatFix;
 typedef sensor_msgs::msg::NavSatStatus NavSatStatus;
