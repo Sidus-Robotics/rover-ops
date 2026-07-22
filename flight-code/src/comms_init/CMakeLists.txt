@@ -16,6 +16,7 @@ find_package(ixwebsocket REQUIRED)
 find_package(rover_interfaces REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(CppLinuxSerial REQUIRED)
+find_package(Threads REQUIRED)
 
 # set(SRC_FILES main.cpp serialib.cpp)
 # add_executable(your_project_name ${SRC_FILES})
@@ -46,6 +47,7 @@ ament_target_dependencies(serial_bridge_init
   rclcpp
   sensor_msgs
   rover_interfaces
+  Threads
   CppLinuxSerial
 )
 
@@ -58,6 +60,7 @@ target_link_libraries(web_client_init
 )
 
 target_link_libraries(serial_bridge_init
+  Threads::Threads
   CppLinuxSerial
 )
 
