@@ -14,7 +14,7 @@
 #define GPSD_PORT 8080
 
 // Rovers Bullet AC Static IP
-#define URL "ws://192.168.1.19:8000/rover-obc"
+#define URL "ws://192.168.1.20:8000/rover-obc"
 
 typedef sensor_msgs::msg::NavSatFix NavSatFix;
 typedef sensor_msgs::msg::NavSatStatus NavSatStatus;
