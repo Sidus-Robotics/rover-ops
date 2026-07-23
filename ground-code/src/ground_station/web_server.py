@@ -63,7 +63,7 @@ class ConnectionManager:
         self.active_connections.pop(client_id)
 
     async def send_personal_message(self, client_id: str, message: str | bytes):
-        if client_id == "controller-node":
+        if client_id == "controller-node" and self.active_connections["rover-obc"]:
             ws: WebSocket = self.active_connections["rover-obc"]
             await ws.send_bytes(message)
         else:
@@ -110,4 +110,4 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
         # await manager.broadcast(f"Client #{client_id} left the chat")
 
 if __name__ == "__main__":
-    uvicorn.run("web_server:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("web_server:app", host="0.0.0.0", port=8000, reload=True)
