@@ -144,8 +144,8 @@ class ControllerProcess(Thread):
         self._y = y
         self._payload = struct.pack('<Bff', self._sync, self._x, self._y)
         
-        if self._testing:
-            logger.info(f"Mag: {math.sqrt(pow(self._x,2) + pow(self._y,2))}\nX: {self._x}\nY: {self._y}\nbin: {self._payload}")
+        # if self._testing:
+        # logger.info(f"Mag: {math.sqrt(pow(self._x,2) + pow(self._y,2))}\nX: {self._x}\nY: {self._y}\nbin: {self._payload}")
     
     def _send_payload(self):
         """Writes the packet to the bus."""
