@@ -228,8 +228,8 @@ class WebsocketProcess(Thread):
                     self._websocket.close()
                     time.sleep(1)
 
-def test_joy():
-    ground = ControllerProcess(config=config)  
+def test_joy(queue: Queue):
+    ground = ControllerProcess(config=config, queue=queue, testing=True)  
     try:
         while True:
             ground._find_events()
@@ -265,3 +265,4 @@ if __name__ == "__main__":
 
     controller_worker.join()
     web_client_worker.join()
+    # test_joy(controller_queue)
