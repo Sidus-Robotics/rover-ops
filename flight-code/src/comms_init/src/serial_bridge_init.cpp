@@ -33,8 +33,8 @@ class USBSerial : public rclcpp::Node
             for (uint8_t index = 0; index < msg->axes.size(); index++)
             {
                 char value = msg->axes.at(index);
-                RCLCPP_INFO(this->get_logger(), "Logging value: %f", value);
-                _serialDevice.WriteBinary(msg->axes);
+                // RCLCPP_INFO(this->get_logger(), "Logging value: %d", value);
+                // _serialDevice.WriteBinary(msg->axes);
                 payload.append(std::to_string(value));
             }
             _serialDevice.Write(payload);
