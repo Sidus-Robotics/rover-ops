@@ -16,7 +16,9 @@
   <depend>Threads</depend>
   <depend>rover_interfaces</depend>
 
-
+  <!-- For Launch File -->
+   <exec_depend>ros2launch</exec_depend>
+   
   <buildtool_depend>ament_cmake</buildtool_depend>
   
   <export>

@@ -131,7 +131,7 @@ class ControllerProcess(Thread):
     def _get_payload(self) -> int:
         """Pack each variable into a 4 byte float.
             With 1 byte Sync. Total 9 byte payload."""
-        dead_zone = 0.15
+        dead_zone = 0.20
         x = round(self._controller.get_axis(self._controller_x_axis), 2) + 0.0
         y = -1 * round(self._controller.get_axis(self._controller_y_axis), 2) + 0.0
 
@@ -145,7 +145,7 @@ class ControllerProcess(Thread):
         self._payload = struct.pack('<Bff', self._sync, self._x, self._y)
         
         # if self._testing:
-        # logger.info(f"Mag: {math.sqrt(pow(self._x,2) + pow(self._y,2))}\nX: {self._x}\nY: {self._y}\nbin: {self._payload}")
+        logger.info(f"Mag: {math.sqrt(pow(self._x,2) + pow(self._y,2))}\nX: {self._x}\nY: {self._y}\nbin: {self._payload}")
     
     def _send_payload(self):
         """Writes the packet to the bus."""
