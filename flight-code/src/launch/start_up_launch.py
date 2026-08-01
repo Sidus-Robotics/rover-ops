@@ -35,7 +35,6 @@ def generate_launch_description() -> LaunchDescription:
                         "format": "XBGR8888",
                     }
                 ],
-             
             ),
             Node(
                 package="camera_ros",
@@ -51,7 +50,13 @@ def generate_launch_description() -> LaunchDescription:
                         "format": "XBGR8888",
                     }
                 ],
-                
+            ),
+            Node(
+                package="web_video_server",
+                namespace="video_server",
+                executable="web_video_server",
+                name="video_server",
+                parameters=[{"port": 8081, "address": "0.0.0.0"}],
             ),
             # ComposableNodeContainer(
             #     name="camera_container",
