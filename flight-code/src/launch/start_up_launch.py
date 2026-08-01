@@ -21,44 +21,58 @@ def generate_launch_description() -> LaunchDescription:
                 name="serial_bridge",
                 ros_arguments=["--log-level", "info"],
             ),
-            ComposableNodeContainer(
-                name="camera_container",
-                namespace="",
-                package="rclcpp_components",
-                executable="component_container",
-                composable_node_descriptions=[
-                    ComposableNode(
-                        package="camera_ros",
-                        plugin="camera::CameraNode",
-                        name="cam0",
-                        parameters=[
-                            {
-                                "camera": 0,
-                                "frame_id": "cam0",
-                                "width": 640,
-                                "height": 480,
-                                "format": "XBGR8888",
-                            }
-                        ],
-                        extra_arguments=[{"use_intra_process_comms": True}],
-                    ),
-                    ComposableNode(
-                        package="camera_ros",
-                        plugin="camera::CameraNode",
-                        name="cam1",
-                        parameters=[
-                            {
-                                "camera": 1,
-                                "frame_id": "cam1",
-                                "width": 640,
-                                "height": 480,
-                                "format": "XBGR8888",
-                            }
-                        ],
-                        extra_arguments=[{"use_intra_process_comms": True}],
-                    ),
-                ],
-                output="screen",
+            Node(
+                package="camera_ros",
+                namespace="cameras",
+                executable="camera_node",
+                name="cam0",
+                parameters=[{"video_device": 0}],
             ),
+            Node(
+                package="camera_ros",
+                namespace="cameras",
+                executable="camera_node",
+                name="cam1",
+                parameters=[{"video_device": 1}],
+            ),
+            # ComposableNodeContainer(
+            #     name="camera_container",
+            #     namespace="",
+            #     package="rclcpp_components",
+            #     executable="component_container",
+            #     composable_node_descriptions=[
+            #         ComposableNode(
+            #             package="camera_ros",
+            #             plugin="camera::CameraNode",
+            #             name="cam0",
+            #             parameters=[
+            #                 {
+            #                     "camera": 0,
+            #                     "frame_id": "cam0",
+            #                     "width": 640,
+            #                     "height": 480,
+            #                     "format": "XBGR8888",
+            #                 }
+            #             ],
+            #             extra_arguments=[{"use_intra_process_comms": True}],
+            #         ),
+            #         ComposableNode(
+            #             package="camera_ros",
+            #             plugin="camera::CameraNode",
+            #             name="cam1",
+            #             parameters=[
+            #                 {
+            #                     "camera": 1,
+            #                     "frame_id": "cam1",
+            #                     "width": 640,
+            #                     "height": 480,
+            #                     "format": "XBGR8888",
+            #                 }
+            #             ],
+            #             extra_arguments=[{"use_intra_process_comms": True}],
+            #         ),
+            #     ],
+            #     output="screen",
+            # ),
         ]
     )
