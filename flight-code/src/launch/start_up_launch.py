@@ -30,6 +30,7 @@ def generate_launch_description() -> LaunchDescription:
                     ComposableNode(
                         package="camera_ros",
                         plugin="camera::CameraNode",
+                        name="cam0",
                         parameters=[
                             {
                                 "camera": 0,
@@ -44,6 +45,7 @@ def generate_launch_description() -> LaunchDescription:
                     ComposableNode(
                         package="camera_ros",
                         plugin="camera::CameraNode",
+                        name="cam1",
                         parameters=[
                             {
                                 "camera": 1,
