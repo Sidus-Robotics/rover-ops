@@ -26,14 +26,32 @@ def generate_launch_description() -> LaunchDescription:
                 namespace="cameras",
                 executable="camera_node",
                 name="cam0",
-                parameters=[{"video_device": 0}],
+                parameters=[
+                    {
+                        "camera": 0,
+                        "frame_id": "cam0",
+                        "width": 640,
+                        "height": 480,
+                        "format": "XBGR8888",
+                    }
+                ],
+                extra_arguments=[{"use_intra_process_comms": True}],
             ),
             Node(
                 package="camera_ros",
                 namespace="cameras",
                 executable="camera_node",
                 name="cam1",
-                parameters=[{"video_device": 1}],
+                parameters=[
+                    {
+                        "camera": 1,
+                        "frame_id": "cam1",
+                        "width": 640,
+                        "height": 480,
+                        "format": "XBGR8888",
+                    }
+                ],
+                extra_arguments=[{"use_intra_process_comms": True}],
             ),
             # ComposableNodeContainer(
             #     name="camera_container",
