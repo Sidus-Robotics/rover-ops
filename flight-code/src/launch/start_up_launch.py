@@ -36,7 +36,7 @@ def generate_launch_description() -> LaunchDescription:
                                 "frame_id": "cam0",
                                 "width": 640,
                                 "height": 480,
-                                "format": "auto",
+                                "format": "XBGR8888",
                             }
                         ],
                         extra_arguments=[{"use_intra_process_comms": True}],
@@ -50,7 +50,7 @@ def generate_launch_description() -> LaunchDescription:
                                 "frame_id": "cam1",
                                 "width": 640,
                                 "height": 480,
-                                "format": "auto",
+                                "format": "XBGR8888",
                             }
                         ],
                         extra_arguments=[{"use_intra_process_comms": True}],
