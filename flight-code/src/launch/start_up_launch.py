@@ -35,7 +35,7 @@ def generate_launch_description() -> LaunchDescription:
                         "format": "XBGR8888",
                     }
                 ],
-                extra_arguments=[{"use_intra_process_comms": True}],
+             
             ),
             Node(
                 package="camera_ros",
@@ -51,7 +51,7 @@ def generate_launch_description() -> LaunchDescription:
                         "format": "XBGR8888",
                     }
                 ],
-                extra_arguments=[{"use_intra_process_comms": True}],
+                
             ),
             # ComposableNodeContainer(
             #     name="camera_container",
