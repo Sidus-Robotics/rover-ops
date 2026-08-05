@@ -29,10 +29,14 @@ def generate_launch_description() -> LaunchDescription:
                 parameters=[
                     {
                         "camera": 0,
-                        "frame_id": "cam0",
+                        "role": "viewfinder",
+                        "format": "XBGR8888",
                         "width": 640,
                         "height": 480,
-                        "format": "XBGR8888",
+                        "jpeg_quality": 50,
+                        "sensor_mode": "mode_2x2binned_720p_regs",
+                        "frame_id": "cam0",
+                        "FrameDurationLimits": [33333, 33333],
                     }
                 ],
             ),
@@ -44,10 +48,14 @@ def generate_launch_description() -> LaunchDescription:
                 parameters=[
                     {
                         "camera": 1,
-                        "frame_id": "cam1",
+                        "role": "viewfinder",
+                        "format": "XBGR8888",
                         "width": 640,
                         "height": 480,
-                        "format": "XBGR8888",
+                        "jpeg_quality": 50,
+                        "sensor_mode": "mode_2x2binned_720p_regs",
+                        "frame_id": "cam1",
+                        "FrameDurationLimits": [33333, 33333],
                     }
                 ],
             ),
