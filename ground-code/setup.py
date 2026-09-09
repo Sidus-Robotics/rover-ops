@@ -4,7 +4,7 @@ setup(
     name='ground-code',
     version='0.0.1',
     install_requires=[
-        'pygame',
+        'pygame-ce',
         'websockets',
         'pyserial',
         'fastapi',
@@ -14,10 +14,10 @@ setup(
     packages=find_packages(where='src'),
     entry_points={
         'gui_scripts': [
-            'ground-station = ground_station.controller:main',
+            'ground-station = ground_station.controller_client:main',
         ],
         'console_scripts': [
-            'ground-station = ground_station.controller:main',
+            'ground-station = ground_station.controller_client:main',
         ]
     }
 )
