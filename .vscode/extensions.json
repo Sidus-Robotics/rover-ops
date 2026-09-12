@@ -5,6 +5,7 @@
     "charliermarsh.ruff",
     "twxs.cmake",
     "ranch-hand-robotics.rde-ros-2",
-    "ms-vscode-remote.remote-containers"
+    "ms-vscode-remote.remote-containers",
+    "tamasfe.even-better-toml"
   ]
 }
