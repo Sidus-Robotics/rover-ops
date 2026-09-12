@@ -1,0 +1,17 @@
+{
+  "configurations": [
+    {
+      "includePath": [
+        "/opt/ros/jazzy/include/**",
+        "/home/nbalsom/sidus_ws/src/rover-ops/flight-code/src/comms_init/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ros2",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++17"
+    }
+  ],
+  "version": 4
+}
