@@ -53,6 +53,8 @@ web_video_server/
 camera_ros/
 
 # venv's
+.env/
+.venv/
 rover-venv/
 
 # CMake generated files
