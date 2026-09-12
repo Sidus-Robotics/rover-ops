@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "ms-vscode.cpptools",
+    "ms-python.python",
+    "charliermarsh.ruff",
+    "twxs.cmake",
+    "ranch-hand-robotics.rde-ros-2",
+    "ms-vscode-remote.remote-containers"
+  ]
+}
