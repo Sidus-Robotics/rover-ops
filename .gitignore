@@ -82,4 +82,4 @@ __pycache__
 .vscode/*.log
 .vscode/ipch/
 # Uncomment if work outside the devcontainer:
-# .vscode/c_cpp_properties.json
+.vscode/c_cpp_properties.json
