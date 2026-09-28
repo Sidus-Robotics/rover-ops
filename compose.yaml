@@ -2,6 +2,7 @@ x-ros2-dev-common: &ros2-dev-common
   build:
     context: .
     dockerfile: docker/Dockerfile.ros2
+  user: 1000:1000
   network_mode: host
   ipc: host
   stdin_open: true 
@@ -11,11 +12,6 @@ x-ros2-dev-common: &ros2-dev-common
 services:
   ros2-linux:
     <<: *ros2-dev-common
-    network_mode: host
-    ipc: host
-    stdin_open: true 
-    tty: true  
-    privileged: true
 
     # Pass in env variables for display.
     environment:
@@ -28,7 +24,7 @@ services:
 
     volumes:
       # Mount the contents of the directory source into the container src.
-      - ./src:/ros2_ws/src:r
+      - ./src:/ros2_ws/src:rw
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - /dev/bus/usb:/dev/bus/usb:rw
       - /dev/dri:/dev/dri:rw
@@ -45,6 +41,7 @@ services:
       # Mount the contents of the directory source into the container src.
       - ./src:/ros2_ws/src:r
       - /mnt/wslg/.X11-unix:/tmp/.X11-unix:rw
+      - ~/.Xauthority:/root/.Xauthority:rw
 
   ros2-mac:
     <<: *ros2-dev-common

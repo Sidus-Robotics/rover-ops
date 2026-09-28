@@ -28,17 +28,23 @@ RUN colcon mixin add default \
 # install ros2 packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-jazzy-desktop \
+    ros-jazzy-ros-gz \
+    ros-jazzy-ros-gz-bridge \
     && rm -rf /var/lib/apt/lists/*
 
 # Work done by Tim below:
 
 # install other things needed...
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    \
+    python3-pip \
+    python3-venv \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /ros2_ws
-RUN mkdir src
+
+# the container needs to own the workspace.
+RUN chown ubuntu:ubuntu /ros2_ws
+RUN mkdir src 
 
 COPY docker/ros2_jazzy_entrypoint.sh /container_entrypoint.sh
 RUN chmod +x /container_entrypoint.sh

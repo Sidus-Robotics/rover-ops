@@ -17,7 +17,7 @@ run_windows() {
 }
 
 run_linux() {
-    xhost +si:localuser:root
+    xhost +local:root
     docker compose run --build --rm ros2-linux
 }
 
