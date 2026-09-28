@@ -5,11 +5,6 @@ setup () {
     docker build -f docker/Dockerfile.ros2 -t ros2 .
 }
 
-run() {
-    # Look at docker run reference for flags: -i -t --rm
-    docker compose run --rm ros2_dev_container bash
-}
-
 run_windows() {
     docker compose run --build --rm ros2-windows
 }
