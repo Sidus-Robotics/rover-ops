@@ -17,4 +17,4 @@ jobs:
         with:
           # package-name: my_package
           target-ros2-distro: jazzy
-          run: colcon build 
+      - run: colcon build 
