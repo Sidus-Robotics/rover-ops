@@ -1,5 +1,12 @@
 #!/bin/bash
 
+echo "
+setup | run to build the dockerfile. 
+run_linux | run with linux display configs.
+run_windows | run with windows display configs. Needs to be within WSL.
+run_mac | run with mac display configs. Needs some setup with xQuartz.
+"
+
 setup () {
     # Look at docker build reference for flags: -f -t
     docker build -f docker/Dockerfile.ros2 -t ros2 .
