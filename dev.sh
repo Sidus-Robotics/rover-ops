@@ -11,16 +11,16 @@ run() {
 }
 
 run_windows() {
-    docker compose --profile linux run --build --rm ros2-windows
+    docker compose run --build --rm ros2-windows
 }
 
 run_linux() {
     xhost +si:localuser:root
-    docker compose --profile linux run --build --rm ros2-linux
+    docker compose run --build --rm ros2-linux
 }
 
 # Mac needs https://www.xquartz.org/
 run_mac() {
     /opt/X11/bin/xhost +localhost
-    docker compose --profile linux run --build --rm ros2-mac
+    docker compose run --build --rm ros2-mac
 }
