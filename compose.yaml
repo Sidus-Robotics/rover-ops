@@ -10,15 +10,6 @@ services:
     tty: true  
     privileged: true
 
-    # Pass in env variables for display.
-    environment:
-      DISPLAY: ${DISPLAY}
-      QT_QPA_PLATFORM: xcb
-      QT_X11_NO_MITSHM: "1"
-
     volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      # Mount the contenst of the directory source into the container src.
+      # Mount the contents of the directory source into the container src.
       - ./src:/ros2_ws/src:r
-
-    command: bash -c
