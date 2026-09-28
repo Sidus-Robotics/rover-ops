@@ -1,1 +1,12 @@
 # TODO
+
+# Check build status of the ROS2 packages.
+
+on: 
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Test."
