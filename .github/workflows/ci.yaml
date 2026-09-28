@@ -9,12 +9,11 @@ on:
 jobs:
   build_and_test_ros2:
     runs-on: ubuntu-latest
-    container:
-      image: rostooling/setup-ros-docker:ubuntu-noble-latest
     steps:
-      - name: Build and run tests
-        uses: ros-tooling/action-ros-ci@v0.4
+      - uses: ros-tooling/setup-ros@v0.7
         with:
-          # package-name: my_package
+          required-ros-distributions: jazzy
+      - uses: ros-tooling/action-ros-ci@v0.4
+        with:
           target-ros2-distro: jazzy
-      - run: colcon build 
+      - run: colcon build
