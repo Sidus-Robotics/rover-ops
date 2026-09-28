@@ -15,5 +15,6 @@ jobs:
           required-ros-distributions: jazzy
       - uses: ros-tooling/action-ros-ci@v0.4
         with:
+          import-token: ${{ secrets.GITHUB_TOKEN }}
           target-ros2-distro: jazzy
       - run: colcon build
