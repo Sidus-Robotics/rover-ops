@@ -11,12 +11,16 @@ run() {
 }
 
 run_windows() {
-    xhost +si:localuser:root
-    docker compose -f compose.yaml -f compose.windows.yaml run --build --rm \
-    ros2_dev_container 
+    docker compose --profile linux run --build --rm ros2-windows
 }
 
 run_linux() {
-    docker compose -f compose.yaml -f compose.linux.yaml run --build --rm \
-    ros2_dev_container 
+    xhost +si:localuser:root
+    docker compose --profile linux run --build --rm ros2-linux
+}
+
+# Mac needs https://www.xquartz.org/
+run_mac() {
+    /opt/X11/bin/xhost +localhost
+    docker compose --profile linux run --build --rm ros2-mac
 }

@@ -1,14 +1,59 @@
+x-ros2-dev-common: &ros2-dev-common
+  build:
+    context: .
+    dockerfile: docker/Dockerfile.ros2
+  network_mode: host
+  ipc: host
+  stdin_open: true 
+  tty: true  
+  privileged: true
+  
 services:
-  ros2_dev_container:
-    build:
-    # Set the context to the working directory.
-      context: .
-      dockerfile: docker/Dockerfile.ros2
+  ros2-linux:
+    <<: *ros2-dev-common
+    profiles: ["linux"]
     network_mode: host
     ipc: host
     stdin_open: true 
     tty: true  
     privileged: true
+
+    # Pass in env variables for display.
+    environment:
+      DISPLAY: ${DISPLAY}
+      QT_QPA_PLATFORM: xcb
+      QT_X11_NO_MITSHM: "1"
+
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+
+    volumes:
+      # Mount the contents of the directory source into the container src.
+      - ./src:/ros2_ws/src:r
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /dev/bus/usb:/dev/bus/usb:rw
+      - /dev/dri:/dev/dri:rw
+    
+  ros2-windows:
+    <<: *ros2-dev-common
+    environment:
+      DISPLAY: ${DISPLAY}
+      QT_QPA_PLATFORM: xcb
+      QT_X11_NO_MITSHM: "1"
+      LIBGL_ALWAYS_SOFTWARE: "1"
+
+    volumes:
+      # Mount the contents of the directory source into the container src.
+      - ./src:/ros2_ws/src:r
+      - /mnt/wslg/.X11-unix:/tmp/.X11-unix:rw
+
+  ros2-mac:
+    <<: *ros2-dev-common
+    environment:
+      DISPLAY: host.docker.internal:0
+      QT_QPA_PLATFORM: xcb
+      QT_X11_NO_MITSHM: "1"
+      LIBGL_ALWAYS_SOFTWARE: "1"
 
     volumes:
       # Mount the contents of the directory source into the container src.
