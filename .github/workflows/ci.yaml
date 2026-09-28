@@ -5,8 +5,16 @@
 on: 
   push:
 
+# Grabbed from https://github.com/ros-tooling/action-ros-ci
 jobs:
-  build:
+  build_and_test_ros2:
     runs-on: ubuntu-latest
+    container:
+      image: rostooling/setup-ros-docker:ubuntu-noble-latest
     steps:
-      - run: echo "Test."
+      - name: Build and run tests
+        uses: ros-tooling/action-ros-ci@v0.4
+        with:
+          # package-name: my_package
+          target-ros2-distro: jazzy
+          run: colcon build 
