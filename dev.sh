@@ -7,5 +7,5 @@ setup () {
 
 run() {
     # Look at docker run reference for flags: -i -t --rm
-    docker run -i -t --rm ros2:latest
+    docker compose run --rm ros2_dev_container bash
 }

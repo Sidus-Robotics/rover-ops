@@ -1,0 +1,23 @@
+services:
+  ros2_dev_container:
+    build:
+    # Set the context to the working directory.
+      context: .
+      dockerfile: docker/Dockerfile.ros2
+    network_mode: host
+    ipc: host
+    stdin_open: true 
+    tty: true  
+    privileged: true
+
+    environment:
+      DISPLAY: ${DISPLAY}
+      QT_QPA_PLATFORM: xcb
+      QT_X11_NO_MITSHM: "1"
+
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # Mount the contenst of the directory source into the container src.
+      - ./src:/ros2_ws/src:r
+
+    command: bash -c

@@ -32,8 +32,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Work done by Tim below:
 
+# install other things needed...
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /ros2_ws
+RUN mkdir -p src
 
 COPY docker/ros2_jazzy_entrypoint.sh /container_entrypoint.sh
 RUN chmod +x /container_entrypoint.sh
