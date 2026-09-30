@@ -10,7 +10,7 @@ run_mac | run with mac display configs. Needs some setup with xQuartz.
 setup () {
     # Look at docker build reference for flags: -f -t
     sudo groupadd docker
-    sudo usermod -aG docker
+    sudo usermod -aG docker $USER 
     docker build -f docker/Dockerfile.ros2 -t ros2 .
 }
 
@@ -19,6 +19,7 @@ run_windows() {
 }
 
 run_linux() {
+    sudo apt install x11-xserver-utils
     xhost +local:root
     docker compose run --build --rm ros2-linux
 }
