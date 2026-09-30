@@ -9,6 +9,8 @@ run_mac | run with mac display configs. Needs some setup with xQuartz.
 
 setup () {
     # Look at docker build reference for flags: -f -t
+    sudo groupadd docker
+    sudo usermod -aG docker
     docker build -f docker/Dockerfile.ros2 -t ros2 .
 }
 
