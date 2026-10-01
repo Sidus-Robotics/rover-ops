@@ -40,11 +40,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-venv \
     && rm -rf /var/lib/apt/lists/*
 
+# macos web page
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    xvfb \
+    x11vnc \
+    novnc \
+    websockify \
+    fluxbox \
+    mesa-utils \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /ros2_ws
 
 # the container needs to own the workspace.
 RUN chown ubuntu:ubuntu /ros2_ws
 RUN mkdir src 
+
+COPY docker/start_vnc.sh /usr/local/bin/start-vnc
+RUN chmod +x /usr/local/bin/start-vnc \
+    && mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix
 
 COPY docker/ros2_jazzy_entrypoint.sh /container_entrypoint.sh
 RUN chmod +x /container_entrypoint.sh

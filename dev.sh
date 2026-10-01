@@ -4,7 +4,7 @@ echo "
 setup | run to build the dockerfile. 
 run_linux | run with linux display configs.
 run_windows | run with windows display configs. Needs to be within WSL.
-run_mac | run with mac display configs. Needs some setup with xQuartz.
+run_mac | run with mac display configs. GUI opens in the browser at http://localhost:6080/vnc.html.
 "
 
 setup () {
@@ -22,8 +22,7 @@ run_linux() {
     docker compose run --build --rm ros2-linux
 }
 
-# Mac needs https://www.xquartz.org/
+# Mac renders GUIs inside the container; open http://localhost:6080/vnc.html in a browser.
 run_mac() {
-    /opt/X11/bin/xhost +localhost
-    docker compose run --build --rm ros2-mac
+    docker compose run --build --rm --service-ports ros2-mac
 }
