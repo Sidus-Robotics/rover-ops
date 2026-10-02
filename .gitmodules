@@ -1,0 +1,3 @@
+[submodule "src/unilidar_l2"]
+	path = src/unilidar_l2
+	url = https://github.com/swordsounds/unilidar_l2_ros2.git
