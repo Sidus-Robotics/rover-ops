@@ -83,3 +83,5 @@ __pycache__
 .vscode/ipch/
 # Uncomment if work outside the devcontainer:
 # .vscode/c_cpp_properties.json
+
+.DS_Store
