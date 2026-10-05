@@ -30,6 +30,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-jazzy-desktop \
     ros-jazzy-ros-gz \
     ros-jazzy-ros-gz-bridge \
+    ros-jazzy-pcl-conversions \
+    ros-jazzy-pcl-ros \
     && rm -rf /var/lib/apt/lists/*
 
 # Work done by Tim below:
