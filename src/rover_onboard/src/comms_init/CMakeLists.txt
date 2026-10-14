@@ -12,8 +12,6 @@ endif()
 # temp
 message(STATUS "comms_init PYTHONPATH=$ENV{PYTHONPATH}")
 
-message(STATUS "rover_interfaces PYTHONPATH=$ENV{PYTHONPATH}")
-message(STATUS "rover_interfaces AMENT_PREFIX_PATH=$ENV{AMENT_PREFIX_PATH}")
 find_package(ament_cmake REQUIRED)
 
 find_package(rclcpp REQUIRED)
