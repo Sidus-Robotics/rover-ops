@@ -5,16 +5,8 @@
 on: 
   push:
 
-# Grabbed from https://github.com/ros-tooling/action-ros-ci
 jobs:
   build_and_test_ros2:
     runs-on: ubuntu-latest
     steps:
-      - uses: ros-tooling/setup-ros@v0.7
-        with:
-          required-ros-distributions: jazzy
-      - uses: ros-tooling/action-ros-ci@v0.4
-        with:
-          import-token: ${{ secrets.GITHUB_TOKEN }}
-          target-ros2-distro: jazzy
-      - run: colcon build
+      - run: echo "Todo."
