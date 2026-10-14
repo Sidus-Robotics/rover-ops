@@ -24,8 +24,8 @@ jobs:
         run: |
           apt-get update
           apt-get install -y --no-install-recommends \
-            git cmake g++ libssl-dev zlib1g-dev \ 
-            python3-colcon-lcov-result python3-colcon-coveragepy-result
+            git cmake g++ libssl-dev zlib1g-dev \
+            lcov python3-colcon-lcov-result python3-colcon-coveragepy-result
 
           git clone https://github.com/machinezone/IXWebSocket.git "$RUNNER_TEMP/IXWebSocket"
           cmake -S "$RUNNER_TEMP/IXWebSocket" -B "$RUNNER_TEMP/IXWebSocket/build" 
