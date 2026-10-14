@@ -1,5 +1,5 @@
 # To use, run: pre-commit install 
-# (Runs everytime you commit with git)
+# (Runs every time you commit with git)
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
