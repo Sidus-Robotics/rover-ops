@@ -18,9 +18,6 @@ find_package(sensor_msgs REQUIRED)
 find_package(CppLinuxSerial REQUIRED)
 find_package(Threads REQUIRED)
 
-# For build
-find_package(rosidl_typesupport_c REQUIRED)
-
 # set(SRC_FILES main.cpp serialib.cpp)
 # add_executable(your_project_name ${SRC_FILES})
 

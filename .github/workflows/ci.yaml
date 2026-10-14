@@ -12,10 +12,18 @@ jobs:
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
-        
+      
+      
       - uses: ros-tooling/setup-ros@v0.7
         with:
           required-ros-distributions: jazzy
+      - name: Check ROS Python path
+        shell: bash
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          echo "PYTHONPATH=$PYTHONPATH"
+          /usr/bin/python3 -c "import sys; print('Python search path:', sys.path); import ament_package; print('ament_package:', ament_package.__file__)
+          
       - uses: ros-tooling/action-ros-ci@v0.4
         with:
           import-token: ${{ secrets.GITHUB_TOKEN }}
