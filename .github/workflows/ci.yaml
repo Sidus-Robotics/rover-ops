@@ -22,7 +22,7 @@ jobs:
         run: |
           source /opt/ros/jazzy/setup.bash
           echo "PYTHONPATH=$PYTHONPATH"
-          /usr/bin/python3 -c "import sys; print('Python search path:', sys.path); import ament_package; print('ament_package:', ament_package.__file__)
+          /usr/bin/python3 -c 'import sys, ament_package; print("Python search path:", sys.path); print("ament_package:", ament_package.__file__)'
           
       - uses: ros-tooling/action-ros-ci@v0.4
         with:
