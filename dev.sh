@@ -8,11 +8,13 @@ run_mac | run with mac display configs. GUI opens in the browser at http://local
 "
 
 setup () {
-    # Look at docker build reference for flags: -f -t
+    # Need to initialize these.
     git submodule update
     mkdir build
     mkdir install
     mkdir log
+
+    # Look at docker build reference for flags: -f -t
     sudo groupadd docker
     sudo usermod -aG docker $USER 
     docker build -f docker/Dockerfile.ros2 -t ros2 .
