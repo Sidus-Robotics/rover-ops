@@ -1,6 +1,6 @@
 # rover-ops
 
-[![CI](https://github.com/Sidus-Robotics/rover-ops/actions/workflows/ci.yaml/badge.svg)](https://github.com/Sidus-Robotics/rover-ops/actions/workflows/ci.yaml)
+![CI](https://github.com/Sidus-Robotics/rover-ops/actions/workflows/ci.yaml/badge.svg)
 
 [flight-code/README.md](flight-code/README.md)
 
