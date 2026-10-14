@@ -20,7 +20,8 @@
    <exec_depend>ros2launch</exec_depend>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-
+  <buildtool_depend>rosidl_typesupport_c</buildtool_depend>
+  
   <export>
     <build_type>ament_cmake</build_type>
   </export>
