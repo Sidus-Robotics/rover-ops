@@ -21,6 +21,7 @@ services:
 
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
+      # - /dev:/dev
 
     volumes:
       # Mount the contents of the directory source into the container src.
