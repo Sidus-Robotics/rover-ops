@@ -1,0 +1,14 @@
+# TODO
+
+# Check formatting
+# Check lint
+# Check clang
+
+on: 
+  push:
+
+jobs:
+  check_format_and_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Todo."

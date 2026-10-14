@@ -1,0 +1,61 @@
+x-ros2-dev-common: &ros2-dev-common
+  build:
+    context: .
+    dockerfile: docker/Dockerfile.ros2
+  user: 1000:1000
+  network_mode: host
+  ipc: host
+  stdin_open: true 
+  tty: true  
+  privileged: true
+  
+services:
+  ros2-linux:
+    <<: *ros2-dev-common
+
+    # Pass in env variables for display.
+    environment:
+      DISPLAY: ${DISPLAY}
+      QT_QPA_PLATFORM: xcb
+      QT_X11_NO_MITSHM: "1"
+
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+
+    volumes:
+      # Mount the contents of the directory source into the container src.
+      - ./src:/ros2_ws/src:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /dev/bus/usb:/dev/bus/usb:rw
+      - /dev/dri:/dev/dri:rw
+    
+  ros2-windows:
+    <<: *ros2-dev-common
+    environment:
+      DISPLAY: ${DISPLAY}
+      QT_QPA_PLATFORM: xcb
+      QT_X11_NO_MITSHM: "1"
+      LIBGL_ALWAYS_SOFTWARE: "1"
+
+    volumes:
+      # Mount the contents of the directory source into the container src.
+      - ./src:/ros2_ws/src:r
+      - /mnt/wslg/.X11-unix:/tmp/.X11-unix:rw
+      - ~/.Xauthority:/root/.Xauthority:rw
+
+  ros2-mac:
+    <<: *ros2-dev-common
+    # Host networking ignores published ports, so the mac service uses a normal bridge network.
+    network_mode: bridge
+    ports:
+      - "127.0.0.1:6080:6080"
+    
+    environment:
+      ENABLE_VNC: "1"
+      DISPLAY: ":1"
+      QT_QPA_PLATFORM: xcb
+      QT_X11_NO_MITSHM: "1"
+
+    volumes:
+      # Mount the contents of the directory source into the container src.
+      - ./src:/ros2_ws/src:rw

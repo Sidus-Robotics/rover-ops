@@ -23,7 +23,6 @@
 *.dll
 *.so.*
 
-
 # Fortran module files
 *.mod
 *.smod
@@ -48,12 +47,9 @@ install
 log
 dist/
 
-# Cloned repos
-web_video_server/
-camera_ros/
-
 # venv's
-rover-venv/
+.env/
+.venv/
 
 # CMake generated files
 CMakeFiles/
@@ -80,5 +76,15 @@ Testing/
 .cache/
 __pycache__
 
-#vscode settings
-.vscode
+# VS code config
+.vscode/launch.json
+.vscode/tasks.json
+.vscode/*.log
+.vscode/ipch/
+# Uncomment if work outside the devcontainer:
+# .vscode/c_cpp_properties.json
+
+.DS_Store
+
+# Ruff linting
+.ruff_cache/

@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+source /opt/ros/jazzy/setup.bash
+
+if [ -e "/ros2_ws/install/setup.bash" ]; then
+    source /ros2_ws/install/setup.bash
+fi
+
+if [ "$ENABLE_VNC" = "1" ]; then
+    /usr/local/bin/start-vnc
+fi
+
+exec "$@"
