@@ -52,11 +52,7 @@ jobs:
           # Skip dependencies that you know work but the build tweaks
           # Skip packages
           colcon-defaults: |
-            {
-              "build": {
-                "symlink-install": ["true"]
-              }
-            
+            {            
               "test": {
                 "packages-skip": ["ground-code"]
               }
