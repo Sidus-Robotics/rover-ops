@@ -18,15 +18,17 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
       
+      # Need to install dependencies outside the ROS2 stack.
       - name: Install C++ libraries
         shell: bash
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends git cmake g++ libssl-dev zlib1g-dev
+          apt-get install -y --no-install-recommends\
+          git cmake g++ libssl-dev zlib1g-dev \ 
+          python3-colcon-lcov-result python3-colcon-coveragepy-result
 
           git clone https://github.com/machinezone/IXWebSocket.git "$RUNNER_TEMP/IXWebSocket"
-          cmake -S "$RUNNER_TEMP/IXWebSocket" -B "$RUNNER_TEMP/IXWebSocket/build" \
-            -DUSE_TLS=ON -DBUILD_SHARED_LIBS=ON
+          cmake -S "$RUNNER_TEMP/IXWebSocket" -B "$RUNNER_TEMP/IXWebSocket/build" 
           cmake --build "$RUNNER_TEMP/IXWebSocket/build" --parallel 2
           cmake --install "$RUNNER_TEMP/IXWebSocket/build"
 
@@ -45,7 +47,8 @@ jobs:
           key: ccache-${{ runner.os }}-${{ github.sha }}
           restore-keys: ccache-${{ runner.os }}-
 
-      - uses: ros-tooling/action-ros-ci@v0.4
+      - name: Check ROS2 Build Status
+        uses: ros-tooling/action-ros-ci@v0.4
         with:
           import-token: ${{ secrets.GITHUB_TOKEN }}
           target-ros2-distro: jazzy
