@@ -2,7 +2,7 @@
 # source install/setup.bash
 # ros2 run comms_init web_client_init
 
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.10)
 project(comms_init)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
