@@ -17,4 +17,6 @@ jobs:
         with:
           import-token: ${{ secrets.GITHUB_TOKEN }}
           target-ros2-distro: jazzy
-      - run: colcon build
+          # Skip dependencies that you know work but the build tweaks
+          rosdep-skip-keys: libcamera CppLinuxSerial IXWebSocket Threads
+      # - run: colcon build
