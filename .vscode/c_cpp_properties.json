@@ -3,7 +3,6 @@
     {
       "includePath": [
         "/opt/ros/jazzy/include/**",
-        "/home/nbalsom/sidus_ws/src/rover-ops/flight-code/src/comms_init/include/**",
         "/usr/include/**"
       ],
       "name": "ros2",
