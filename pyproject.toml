@@ -11,7 +11,7 @@ indent-style = "space"
 select = ["E", "W", "F", "I"]
 ignore = []
 per-file-ignores = { "__init__.py" = ["F401"] }
-exclude = ["ground_station/", "src/"]
+exclude = ["ground_station/*.py", "src/"]
 
 [tool.ruff.lint.isort]
 # Groups standard library, third-party (like rclpy), and local ROS nodes correctly
