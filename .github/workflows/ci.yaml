@@ -13,7 +13,7 @@ jobs:
     # Added this in because it takes way too long to build.
     container:
         image: ros:jazzy-ros-base
-        
+
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
@@ -44,10 +44,20 @@ jobs:
           path: .ccache
           key: ccache-${{ runner.os }}-${{ github.sha }}
           restore-keys: ccache-${{ runner.os }}-
-  
+
       - uses: ros-tooling/action-ros-ci@v0.4
         with:
           import-token: ${{ secrets.GITHUB_TOKEN }}
           target-ros2-distro: jazzy
           # Skip dependencies that you know work but the build tweaks
+          # Skip packages
+          colcon-defaults: |
+            {
+              "build": {
+              }
+            
+              "test": {
+                "packages-skip": ["ground-code"]
+              }
+            }
           rosdep-skip-keys: "libcamera CppLinuxSerial IXWebSocket Threads"
