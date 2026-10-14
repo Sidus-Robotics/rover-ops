@@ -85,3 +85,6 @@ __pycache__
 # .vscode/c_cpp_properties.json
 
 .DS_Store
+
+# Ruff linting
+.ruff_cache/
