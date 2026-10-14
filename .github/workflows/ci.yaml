@@ -5,8 +5,59 @@
 on: 
   push:
 
+# Grabbed from https://github.com/ros-tooling/action-ros-ci
 jobs:
   build_and_test_ros2:
     runs-on: ubuntu-latest
+
+    # Added this in because it takes way too long to build.
+    container:
+        image: ros:jazzy-ros-base
+
     steps:
-      - run: echo "Todo."
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+      
+      # Need to install dependencies outside the ROS2 stack.
+      - name: Install C++ libraries
+        shell: bash
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            git cmake g++ libssl-dev zlib1g-dev \
+            lcov python3-colcon-lcov-result python3-colcon-coveragepy-result
+
+          git clone https://github.com/machinezone/IXWebSocket.git "$RUNNER_TEMP/IXWebSocket"
+          cmake -S "$RUNNER_TEMP/IXWebSocket" -B "$RUNNER_TEMP/IXWebSocket/build" 
+          cmake --build "$RUNNER_TEMP/IXWebSocket/build" --parallel 2
+          cmake --install "$RUNNER_TEMP/IXWebSocket/build"
+
+          git clone https://github.com/gbmhunter/CppLinuxSerial.git "$RUNNER_TEMP/CppLinuxSerial"
+          cmake -S "$RUNNER_TEMP/CppLinuxSerial" -B "$RUNNER_TEMP/CppLinuxSerial/build" \
+            -DBUILD_TESTS=OFF
+          cmake --build "$RUNNER_TEMP/CppLinuxSerial/build" --parallel 2
+          cmake --install "$RUNNER_TEMP/CppLinuxSerial/build"
+          ldconfig
+
+      # Added this in because it takes way too long to build.
+      - name: Setup Compiler Cache (ccache)
+        uses: actions/cache@v4
+        with:
+          path: .ccache
+          key: ccache-${{ runner.os }}-${{ github.sha }}
+          restore-keys: ccache-${{ runner.os }}-
+
+      - name: Check ROS2 Build Status
+        uses: ros-tooling/action-ros-ci@v0.4
+        with:
+          import-token: ${{ secrets.GITHUB_TOKEN }}
+          target-ros2-distro: jazzy
+          # Skip dependencies that you know work but the build tweaks
+          # Skip packages
+          colcon-defaults: |
+            {            
+              "test": {
+                "packages-skip": ["ground-code"]
+              }
+            }
+          rosdep-skip-keys: "libcamera CppLinuxSerial IXWebSocket Threads"
