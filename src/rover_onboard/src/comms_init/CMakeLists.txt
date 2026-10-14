@@ -9,9 +9,18 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+# temp
 message(STATUS "comms_init PYTHONPATH=$ENV{PYTHONPATH}")
 
 find_package(ament_cmake REQUIRED)
+
+# temp
+
+message(STATUS "rover_interfaces AMENT_PREFIX_PATH=$ENV{AMENT_PREFIX_PATH}")
+ament_index_get_resources(_c_typesupports rosidl_typesupport_c)
+message(STATUS "Visible C type supports: ${_c_typesupports}")
+
+
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(ixwebsocket REQUIRED)
