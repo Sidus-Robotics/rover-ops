@@ -14,6 +14,11 @@ setup () {
     mkdir install
     mkdir log
 
+    # Need to create a venv
+    if [ ! -e ".venv" ]; then
+        python3 -m venv .venv
+    fi
+
     # Look at docker build reference for flags: -f -t
     sudo groupadd docker
     sudo usermod -aG docker "$USER" 

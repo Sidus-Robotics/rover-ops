@@ -25,6 +25,8 @@ services:
 
     volumes:
       # Mount the contents of the directory source into the container src.
+      - ./.venv:/ros2_ws/.venv:ro
+      - ./ground_station:/ros2_ws/ground_station:ro
       - ./src:/ros2_ws/src:rw
       - ./build:/ros2_ws/build:rw
       - ./install:/ros2_ws/install:rw
