@@ -30,6 +30,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-jazzy-desktop \
     ros-jazzy-ros-gz \
     ros-jazzy-ros-gz-bridge \
+    ros-jazzy-pcl-conversions \
+    ros-jazzy-pcl-ros \
     && rm -rf /var/lib/apt/lists/*
 
 # Work done by Tim below:
@@ -50,15 +52,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mesa-utils \
     && rm -rf /var/lib/apt/lists/*
 
+COPY docker/start_vnc.sh /usr/local/bin/start-vnc
+RUN chmod +x /usr/local/bin/start-vnc \
+    && mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix
+
 WORKDIR /ros2_ws
 
 # the container needs to own the workspace.
 RUN chown ubuntu:ubuntu /ros2_ws
 RUN mkdir src 
-
-COPY docker/start_vnc.sh /usr/local/bin/start-vnc
-RUN chmod +x /usr/local/bin/start-vnc \
-    && mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix
 
 COPY docker/ros2_jazzy_entrypoint.sh /container_entrypoint.sh
 RUN chmod +x /container_entrypoint.sh
