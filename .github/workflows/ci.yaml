@@ -23,7 +23,7 @@ jobs:
         shell: bash
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends\
+          apt-get install -y --no-install-recommends \
             git cmake g++ libssl-dev zlib1g-dev \ 
             python3-colcon-lcov-result python3-colcon-coveragepy-result
 
