@@ -16,7 +16,7 @@ setup () {
 
     # Look at docker build reference for flags: -f -t
     sudo groupadd docker
-    sudo usermod -aG docker $USER 
+    sudo usermod -aG docker "$USER" 
     docker build -f docker/Dockerfile.ros2 -t ros2 .
 }
 
