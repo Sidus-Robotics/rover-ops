@@ -87,5 +87,10 @@ __pycache__
 
 .DS_Store
 
+# Colcon Build 
+build
+install
+log
+
 # Ruff linting
 .ruff_cache/

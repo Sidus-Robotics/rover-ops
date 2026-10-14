@@ -1,6 +1,5 @@
 # Dependency's
 ---
-### Edit your cpp include paths:  /usr/local/include/** and /usr/include/**
 https://github.com/machinezone/IXWebSocket.git
 
 

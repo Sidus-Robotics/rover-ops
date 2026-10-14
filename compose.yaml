@@ -21,10 +21,16 @@ services:
 
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
+      # - /dev:/dev
 
     volumes:
       # Mount the contents of the directory source into the container src.
+      - ./.venv:/ros2_ws/.venv:ro
+      - ./ground_station:/ros2_ws/ground_station:ro
       - ./src:/ros2_ws/src:rw
+      - ./build:/ros2_ws/build:rw
+      - ./install:/ros2_ws/install:rw
+      - ./log:/ros2_ws/log:rw
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - /dev/bus/usb:/dev/bus/usb:rw
       - /dev/dri:/dev/dri:rw
@@ -40,6 +46,9 @@ services:
     volumes:
       # Mount the contents of the directory source into the container src.
       - ./src:/ros2_ws/src:r
+      - ./build:/ros2_ws/build:rw
+      - ./install:/ros2_ws/install:rw
+      - ./log:/ros2_ws/log:rw
       - /mnt/wslg/.X11-unix:/tmp/.X11-unix:rw
       - ~/.Xauthority:/root/.Xauthority:rw
 
@@ -59,3 +68,6 @@ services:
     volumes:
       # Mount the contents of the directory source into the container src.
       - ./src:/ros2_ws/src:rw
+      - ./build:/ros2_ws/build:rw
+      - ./install:/ros2_ws/install:rw
+      - ./log:/ros2_ws/log:rw
