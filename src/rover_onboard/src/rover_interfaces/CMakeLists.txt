@@ -5,6 +5,10 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+# Temp
+message(STATUS "rover_interfaces PYTHONPATH=$ENV{PYTHONPATH}")
+message(STATUS "rover_interfaces AMENT_PREFIX_PATH=$ENV{AMENT_PREFIX_PATH}")
+
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
