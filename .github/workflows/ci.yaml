@@ -9,8 +9,11 @@ on:
 jobs:
   build_and_test_ros2:
     runs-on: ubuntu-latest
+
+    # Added this in because it takes way too long to build.
     container:
         image: ros:jazzy-ros-base
+        
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
@@ -34,6 +37,13 @@ jobs:
           cmake --install "$RUNNER_TEMP/CppLinuxSerial/build"
           ldconfig
 
+      # Added this in because it takes way too long to build.
+      - name: Setup Compiler Cache (ccache)
+        uses: actions/cache@v4
+        with:
+          path: .ccache
+          key: ccache-${{ runner.os }}-${{ github.sha }}
+          restore-keys: ccache-${{ runner.os }}-
   
       - uses: ros-tooling/action-ros-ci@v0.4
         with:
