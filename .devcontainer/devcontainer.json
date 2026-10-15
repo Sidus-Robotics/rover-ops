@@ -19,7 +19,7 @@
   "workspaceMount": "source=${localWorkspaceFolder},target=/${localWorkspaceFolderBasename},type=bind",
   "workspaceFolder": "/${localWorkspaceFolderBasename}",
   "mounts": [
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.bash_history,target=/home/vscode/.bash_history,type=bind"
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.bash_history,target=/home/ubuntu/.bash_history,type=bind"
   ],
   "features": {
     "ghcr.io/devcontainers/features/desktop-lite:1": {}
@@ -27,7 +27,9 @@
   "forwardPorts": [6080, 5901],
   "portsAttributes": {
     "6080": {
-      "label": "Desktop (Web)"
+      "label": "Desktop (noVNC)",
+      "protocol": "http",
+      "onAutoForward": "openBrowser"
     },
     "5901": {
       "label": "Desktop (VNC)"
