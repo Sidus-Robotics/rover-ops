@@ -2,6 +2,10 @@
 ---
 Operational "flight" code for the rover. May be combined with rover-sim for the simulation through cloning this repo or vice versa.
 ---
+## Submodules
+
+For a new checkout, clone with `git clone --recurse-submodules https://github.com/Sidus-Robotics/rover-ops.git`. In an existing checkout, run `git submodule update --init --recursive` from the repository root after pulling changes. The `dev.sh` setup and run helpers also do this before starting Docker.
+
 # Repository Information
 ---
 ### flight-code: 
