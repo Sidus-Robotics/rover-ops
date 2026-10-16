@@ -1,20 +1,8 @@
 {
   "name": "jazzy desktop",
   "dockerFile": "Dockerfile",
-  "containerEnv": {
-    // "DISPLAY": ":0",
-    // "WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}",
-		// "XDG_RUNTIME_DIR": "${localEnv:XDG_RUNTIME_DIR}",
-		// "PULSE_SERVER": "${localEnv:PULSE_SERVER}",
-    // "LIBGL_ALWAYS_SOFTWARE": "1" 
-  },
   "runArgs": [
     "--privileged"
-    // "--network=host",
-    // "--ipc=host",
-    // "--volume=/tmp/.X11-unix:/tmp/.X11-unix",
-		// "--volume=/mnt/wslg:/mnt/wslg",
-    // "-e", "DISPLAY=${env:DISPLAY}"
   ],
   "workspaceMount": "source=${localWorkspaceFolder},target=/${localWorkspaceFolderBasename},type=bind",
   "workspaceFolder": "/${localWorkspaceFolderBasename}",
