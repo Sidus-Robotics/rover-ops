@@ -4,6 +4,7 @@
   "runArgs": [
     "--privileged"
   ],
+  "postCreateCommand": "python3 -m venv .venv && .venv/bin/pip install --upgrade pip && .venv/bin/pip install -e .",
   "workspaceMount": "source=${localWorkspaceFolder},target=/${localWorkspaceFolderBasename},type=bind",
   "workspaceFolder": "/${localWorkspaceFolderBasename}",
   "mounts": [
@@ -12,7 +13,10 @@
   "features": {
     "ghcr.io/devcontainers/features/desktop-lite:1": {}
   },
-  "forwardPorts": [6080, 5901],
+  "forwardPorts": [
+    6080,
+    5901
+  ],
   "portsAttributes": {
     "6080": {
       "label": "Desktop (noVNC)",
@@ -27,23 +31,23 @@
     "vscode": {
       "extensions": [
         "ms-vscode.cpptools",
-				"ms-python.python",
+        "ms-python.python",
         "charliermarsh.ruff",
-				"ranch-hand-robotics.rde-ros-2",
-				"tamasfe.even-better-toml"
+        "ranch-hand-robotics.rde-ros-2",
+        "tamasfe.even-better-toml"
       ],
       "settings": {
-				"editor.formatOnSave": true,
-				"python.defaultInterpreterPath": "/usr/bin/python3",
-				"[python]": {
-					"editor.defaultFormatter": "charliermarsh.ruff",
-					"editor.tabSize": 4,
-					"editor.codeActionsOnSave": {
-						"source.fixAll": "explicit",
-						"source.organizeImports": "explicit"
-					}
-				}
-			}
+        "editor.formatOnSave": true,
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.tabSize": 4,
+          "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+          }
+        }
+      }
     }
   }
 }

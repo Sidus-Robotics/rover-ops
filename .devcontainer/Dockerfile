@@ -16,8 +16,10 @@ RUN apt-get update && \
     chmod 0440 /etc/sudoers.d/$USERNAME
 
 # nbalsom addition - install ros2 packages & other deps.
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ros-jazzy-desktop \
+RUN apt-get update && apt-get install -y --no-install-recommends \  
+    python3-pip \
+    python3-venv \
+    python3-setuptools \
     ros-jazzy-ros-gz \
     ros-jazzy-ros-gz-bridge \
     ros-jazzy-pcl-conversions \

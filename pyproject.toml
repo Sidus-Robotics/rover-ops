@@ -1,5 +1,23 @@
-# https://docs.astral.sh/ruff/linter/
+[project]
+name = "ground-station"
+version = "0.0.1"
+description = "Mission control, ground station control software"
+dependencies = [
+    "websockets",
+    "pygame-ce",
+    "pyserial",
+    "fastapi[standard]",
+    "pydantic",
+]
 
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.fastapi]
+entrypoint = "web_server:app"
+
+# https://docs.astral.sh/ruff/linter/
 [tool.ruff]
 line-length = 88
 
@@ -14,6 +32,11 @@ per-file-ignores = { "__init__.py" = ["F401"] }
 exclude = ["ground_station/*.py", "src/"]
 
 [tool.ruff.lint.isort]
-# Groups standard library, third-party (like rclpy), and local ROS nodes correctly
-section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
 forced-separate = ["rclpy"]
