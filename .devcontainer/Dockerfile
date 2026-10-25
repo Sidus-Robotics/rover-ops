@@ -32,14 +32,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # install and build external libraries
 # includes CppLinuxSerial, IXWebSocket, etc
-# RUN git clone https://github.com/gbmhunter/CppLinuxSerial.git /tmp/CppLinuxSerial \
-#     && cmake -S /tmp/CppLinuxSerial -B /tmp/CppLinuxSerial/build \
-#     && cmake --build /tmp/CppLinuxSerial/build --parallel 2 \
-#     && cmake --install /tmp/CppLinuxSerial/build \
-#     && git clone https://github.com/machinezone/IXWebSocket.git /tmp/IXWebSocket \
-#     && cmake -S /tmp/IXWebSocket -B /tmp/IXWebSocket/build \
-#     && cmake --build /tmp/IXWebSocket/build --parallel 2 \
-#     && cmake --install /tmp/IXWebSocket/build 
+RUN git clone https://github.com/gbmhunter/CppLinuxSerial.git /tmp/CppLinuxSerial \
+    && cmake -S /tmp/CppLinuxSerial -B /tmp/CppLinuxSerial/build \
+    && cmake --build /tmp/CppLinuxSerial/build --parallel 2 \
+    && cmake --install /tmp/CppLinuxSerial/build \
+    && git clone https://github.com/machinezone/IXWebSocket.git /tmp/IXWebSocket \
+    && cmake -S /tmp/IXWebSocket -B /tmp/IXWebSocket/build \
+    && cmake --build /tmp/IXWebSocket/build --parallel 2 \
+    && cmake --install /tmp/IXWebSocket/build 
 
 # macos web page - DONT THINK WE WILL NEED THESE, BUT I PUT HERE JUST IN CASE
 # RUN apt-get update && apt-get install -y --no-install-recommends \
