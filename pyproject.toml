@@ -8,6 +8,7 @@ dependencies = [
     "pyserial",
     "fastapi[standard]",
     "pydantic",
+    "setuptools",
 ]
 
 [build-system]
