@@ -1,25 +1,18 @@
 FROM ros:jazzy-perception
 
-# Add ubuntu user with same UID and GID as your host system, if it doesn't already exist
-# Since Ubuntu 24.04, a non-root user is created by default with the name vscode and UID=1000
 ARG USERNAME=ubuntu
 ARG USER_UID=1000
-ARG USER_GID=$USER_UID
-RUN if ! id -u $USER_UID >/dev/null 2>&1; then \
-        groupadd --gid $USER_GID $USERNAME && \
-        useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME; \
-    fi
-# Add sudo support for the non-root user
-RUN apt-get update && \
-    apt-get install -y sudo && \
-    echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
-    chmod 0440 /etc/sudoers.d/$USERNAME
+ARG USER_GID=1000
 
-# nbalsom addition - install ros2 packages & other deps.
-RUN apt-get update && apt-get install -y --no-install-recommends \  
+# Install ros2 packages & other deps.
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    build-essential \
+    cmake \
+    git \
+    sudo \
     python3-pip \
-    python3-venv \
     python3-setuptools \
+    python3-venv \
     ros-jazzy-ros-gz \
     ros-jazzy-ros-gz-bridge \
     ros-jazzy-pcl-conversions \
@@ -30,18 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# install and build external libraries
-# includes CppLinuxSerial, IXWebSocket, etc
-RUN git clone https://github.com/gbmhunter/CppLinuxSerial.git /tmp/CppLinuxSerial \
-    && cmake -S /tmp/CppLinuxSerial -B /tmp/CppLinuxSerial/build \
-    && cmake --build /tmp/CppLinuxSerial/build --parallel 2 \
-    && cmake --install /tmp/CppLinuxSerial/build \
-    && git clone https://github.com/machinezone/IXWebSocket.git /tmp/IXWebSocket \
-    && cmake -S /tmp/IXWebSocket -B /tmp/IXWebSocket/build \
-    && cmake --build /tmp/IXWebSocket/build --parallel 2 \
-    && cmake --install /tmp/IXWebSocket/build 
-
-# macos web page - DONT THINK WE WILL NEED THESE, BUT I PUT HERE JUST IN CASE
+# macos web page
 # RUN apt-get update && apt-get install -y --no-install-recommends \
 #     xvfb \
 #     x11vnc \
@@ -51,21 +33,33 @@ RUN git clone https://github.com/gbmhunter/CppLinuxSerial.git /tmp/CppLinuxSeria
 #     mesa-utils \
 #     && rm -rf /var/lib/apt/lists/*
 
-# Switch from root to user
-USER $USERNAME
+RUN if ! id -u "${USER_UID}" >/dev/null 2>&1; then \
+    groupadd --gid "${USER_GID}" "${USERNAME}" && \
+    useradd --create-home --shell /bin/bash \
+    --uid "${USER_UID}" \
+    --gid "${USER_GID}" \
+    "${USERNAME}"; \
+fi
+
+RUN echo "${USERNAME} ALL=(root) NOPASSWD:ALL" > "/etc/sudoers.d/${USERNAME}" \
+    && chmod 0440 "/etc/sudoers.d/${USERNAME}"
 
 # Add user to video group to allow access to webcam
-RUN sudo usermod --append --groups video $USERNAME
+RUN usermod --append --groups video $USERNAME
 
-# Update all packages
-RUN sudo apt update && sudo apt upgrade -y
+# install and build external libraries
+# includes CppLinuxSerial, IXWebSocket, etc
+RUN git clone https://github.com/gbmhunter/CppLinuxSerial.git /tmp/CppLinuxSerial \
+    && cmake -S /tmp/CppLinuxSerial -B /tmp/CppLinuxSerial/build \
+    && cmake --build /tmp/CppLinuxSerial/build --parallel 2 \
+    && cmake --install /tmp/CppLinuxSerial/build
 
-# Rosdep update
-RUN rosdep update
+RUN git clone https://github.com/machinezone/IXWebSocket.git /tmp/IXWebSocket \
+    && cmake -S /tmp/IXWebSocket -B /tmp/IXWebSocket/build \
+    && cmake --build /tmp/IXWebSocket/build --parallel 2 \
+    && cmake --install /tmp/IXWebSocket/build
+
+USER ${USERNAME}
 
 # Source the ROS setup file
-RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
-
-################################
-## ADD ANY CUSTOM SETUP BELOW ##
-################################
+RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /home/${USERNAME}/.bashrc

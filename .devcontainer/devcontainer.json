@@ -1,30 +1,35 @@
 {
-  "name": "jazzy desktop",
-  "dockerFile": "Dockerfile",
+  "name": "rover-ops ROS 2 Jazzy",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "USERNAME": "ubuntu"
+    }
+  },
   "runArgs": [
-    "--privileged"
+    "--shm-size=1g"
   ],
-  "postCreateCommand": "python3 -m venv .venv && .venv/bin/pip install --upgrade pip && .venv/bin/pip install -e .",
-  "workspaceMount": "source=${localWorkspaceFolder},target=/${localWorkspaceFolderBasename},type=bind",
-  "workspaceFolder": "/${localWorkspaceFolderBasename}",
+  "remoteUser": "ubuntu",
+  "containerUser": "ubuntu",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "mounts": [
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.bash_history,target=/home/ubuntu/.bash_history,type=bind"
+    "type=volume,source=rover-ops-bash-history,target=/home/ubuntu/.bash_history"
   ],
   "features": {
-    "ghcr.io/devcontainers/features/desktop-lite:1": {}
+    "ghcr.io/devcontainers/features/desktop-lite:1": {
+      "version": "1.2.10"
+    }
   },
+  "postCreateCommand": "bash -lc 'python3 -m venv .venv && .venv/bin/pip install --upgrade pip && .venv/bin/pip install -e ./ground_station && source /opt/ros/$ROS_DISTRO/setup.bash && rosdep update --rosdistro $ROS_DISTRO && rosdep install --from-paths src/rover_onboard/src --ignore-src --rosdistro $ROS_DISTRO -r -y'",
   "forwardPorts": [
-    6080,
-    5901
+    6080
   ],
   "portsAttributes": {
     "6080": {
       "label": "Desktop (noVNC)",
       "protocol": "http",
       "onAutoForward": "openBrowser"
-    },
-    "5901": {
-      "label": "Desktop (VNC)"
     }
   },
   "customizations": {
@@ -38,15 +43,7 @@
       ],
       "settings": {
         "editor.formatOnSave": true,
-        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
-        "[python]": {
-          "editor.defaultFormatter": "charliermarsh.ruff",
-          "editor.tabSize": 4,
-          "editor.codeActionsOnSave": {
-            "source.fixAll": "explicit",
-            "source.organizeImports": "explicit"
-          }
-        }
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python"
       }
     }
   }
