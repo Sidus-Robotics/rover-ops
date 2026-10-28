@@ -1,0 +1,50 @@
+{
+  "name": "rover-ops ROS 2 Jazzy",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "USERNAME": "ubuntu"
+    }
+  },
+  "runArgs": [
+    "--shm-size=1g"
+  ],
+  "remoteUser": "ubuntu",
+  "containerUser": "ubuntu",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "mounts": [
+    "type=volume,source=rover-ops-bash-history,target=/home/ubuntu/.bash_history"
+  ],
+  "features": {
+    "ghcr.io/devcontainers/features/desktop-lite:1": {
+      "version": "1.2.10"
+    }
+  },
+  "postCreateCommand": "bash -lc 'python3 -m venv .venv && .venv/bin/pip install --upgrade pip && .venv/bin/pip install -e ./ground_station && source /opt/ros/$ROS_DISTRO/setup.bash && rosdep update --rosdistro $ROS_DISTRO && rosdep install --from-paths src/rover_onboard/src --ignore-src --rosdistro $ROS_DISTRO -r -y'",
+  "forwardPorts": [
+    6080
+  ],
+  "portsAttributes": {
+    "6080": {
+      "label": "Desktop (noVNC)",
+      "protocol": "http",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-python.python",
+        "charliermarsh.ruff",
+        "ranch-hand-robotics.rde-ros-2",
+        "tamasfe.even-better-toml"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python"
+      }
+    }
+  }
+}

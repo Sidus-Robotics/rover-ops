@@ -2,6 +2,11 @@
 
 This is a guide on how you can contribute your own code to the project using Git and GitHub.
 
+## Before making changes
+
+Use the repository devcontainer for development. It is the team baseline for
+ROS 2, CMake, Python, the external C++ libraries, and the VS Code extensions.
+
 ## Development Workflow
 We follow the GitHub Flow development workflow for simplicity. Read more about GitHub flow [here](https://docs.github.com/en/get-started/using-github/github-flow).
 
@@ -26,4 +31,4 @@ We follow the GitHub Flow development workflow for simplicity. Read more about G
     * Create a pull request against the `main` branch
     * Fill out the required fields in the pull request template
     * Write bullet points on what changed, features added, etc.
-    * Tag a lead and/or another teammate for review before merging  
+    * Tag a lead and/or another teammate for review before merging

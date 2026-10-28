@@ -1,35 +1,15 @@
-# Setup 
----
-Create a venv
-```
-mkdir ground-code/rover-venv
+# Ground station
 
-cd ground-code 
+The ground station is a Python package located in `src/ground_station`.
+The recommended development environment is the repository devcontainer.
 
-python3 -m venv rover-venv/
+## Layout
 
-source rover-venv/bin/activate
-#Optionally you can use '.' instead of typing 'source'
-
-# ctrl+shift+p and set this as your interpreter ground-code/rover-venv/bin/python3.10
-
-deactivate
-```
-Use setuptools
-
-https://docs.python.org/3/library/venv.html
-
-
-https://setuptools.pypa.io/en/latest/userguide/quickstart.html
-
-```
-pip install --upgrade build
-
-python -m build
-
-pip install dist/<ground-code-tar-or-whl>
-
-pip uninstall ground-code
-
-<entry>
+```text
+ground_station/
+  pyproject.toml
+  src/
+    ground_station/
+      controller_client.py
+      web_server.py
 ```
