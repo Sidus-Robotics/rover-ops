@@ -35,14 +35,28 @@ Mission control & telemetry package.
 
 ## Development Setup
 
-*Instructions for first time development setup.*
+*Instructions for first time setup.*
 
 ### Prerequisites
-- VS Code & Remote Development Extension
-- Docker Desktop (Mac & Windows) or Docker CLI
+- Install VS Code and the Remote Development Extension
+- Follow the instructions based on your operating system below:
+
+**Windows:**
+- Install WSL2 and Ubuntu 24.04 distribution
+- Install Docker Desktop and enable WSL integration in settings
+
+**MacOS:**
+- Install and setup Docker Desktop
+
+**Linux:**
+- Install Docker CLI
 
 ### Installation
-
+#### 1. Clone the repository:
+```bash
+git clone https://github.com/Sidus-Robotics/rover-ops.git
+```
+Create 
 ## Contributing
 
 ## Acknowledgements
