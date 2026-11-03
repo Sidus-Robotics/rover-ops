@@ -79,12 +79,18 @@ __pycache__
 # VS code config
 .vscode/launch.json
 .vscode/tasks.json
+.vscode/settings.json
 .vscode/*.log
 .vscode/ipch/
 # Uncomment if work outside the devcontainer:
 # .vscode/c_cpp_properties.json
 
 .DS_Store
+
+# Colcon Build 
+build
+install
+log
 
 # Ruff linting
 .ruff_cache/
