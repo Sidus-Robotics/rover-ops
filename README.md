@@ -2,7 +2,7 @@
 
 # rover-ops
 
-[![CI](https://github.com/Sidus-Robotics/rover-ops/actions/workflows/ci.yaml/badge.svg)]
+![CI](https://github.com/Sidus-Robotics/rover-ops/actions/workflows/ci.yaml/badge.svg)
 
 Robotic operating software for use with a student built rover competing in the Canadian International Rover Challenge (CIRC). Built using ROS 2.
 
