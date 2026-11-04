@@ -1,8 +1,9 @@
 # TODO
 
 # Check build status of the ROS2 packages.
+name: CI
 
-on: 
+on:
   push:
 
 # Grabbed from https://github.com/ros-tooling/action-ros-ci
@@ -17,7 +18,7 @@ jobs:
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
-      
+
       # Need to install dependencies outside the ROS2 stack.
       - name: Install C++ libraries
         shell: bash
@@ -28,7 +29,7 @@ jobs:
             lcov python3-colcon-lcov-result python3-colcon-coveragepy-result
 
           git clone https://github.com/machinezone/IXWebSocket.git "$RUNNER_TEMP/IXWebSocket"
-          cmake -S "$RUNNER_TEMP/IXWebSocket" -B "$RUNNER_TEMP/IXWebSocket/build" 
+          cmake -S "$RUNNER_TEMP/IXWebSocket" -B "$RUNNER_TEMP/IXWebSocket/build"
           cmake --build "$RUNNER_TEMP/IXWebSocket/build" --parallel 2
           cmake --install "$RUNNER_TEMP/IXWebSocket/build"
 
@@ -55,7 +56,7 @@ jobs:
           # Skip dependencies that you know work but the build tweaks
           # Skip packages
           colcon-defaults: |
-            {            
+            {
               "test": {
                 "packages-skip": ["ground-code"]
               }

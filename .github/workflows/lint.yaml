@@ -3,8 +3,9 @@
 # Check formatting
 # Check lint
 # Check clang
+name: Lint
 
-on: 
+on:
   push:
 
 jobs:
