@@ -60,7 +60,9 @@ Follow the instructions below for *first time setup:*
 
 2. **Open the `rover-ops/` repository folder in VS Code.**
 
-3. **Select "Reopen in container" when prompted on screen.**
+3. **Select "Reopen in container" when prompted on screen.** 
+
+    If you are not prompted onscreen, you can open the VS Code command palette (Ctrl + Shift + P), and run "Dev Containers: Reopen in Container."
 
 4. **Wait for the container to finish building.**
 
