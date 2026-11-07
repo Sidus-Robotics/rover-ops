@@ -12,29 +12,54 @@ USAGE:
 - Run the controller bridge listener node within WSL.
 """
 
-import argparse
 import json
+import re
 import socket
+import subprocess
 import time
 import uuid
 
 import pygame
 
 
+def get_wsl_ip():
+    """Discover the current WSL IP address."""
+
+    try:
+        result = subprocess.run(
+            ["wsl.exe", "sh", "-lc", "ip -4 route get 1.1.1.1"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            check=True,
+        )
+
+        match = re.search(r"\bsrc\s+(\d+\.\d+\.\d+\.\d+)", result.stdout)
+
+        if not match:
+            raise RuntimeError("Could not find WSL IP address")
+
+        ip = match.group(1)
+
+        print(f"Discovered WSL IP: {ip}")
+        return ip
+
+    except Exception as e:
+        raise RuntimeError(f"Failed to discover WSL IP: {e}")
+
+
 def apply_deadzone(value: float, deadzone: float) -> float:
     if abs(value) < deadzone:
         return 0.0
-    return value
+    return round(value, 3)
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--host", default="127.0.0.1", help="ROS 2 receiver IP address")
-    parser.add_argument("--port", type=int, default=8765)
-    parser.add_argument("--rate", type=float, default=60.0)
-    parser.add_argument("--deadzone", type=float, default=0.1)
-    parser.add_argument("--joystick", type=int, default=0, help="Pygame joystick index")
-    args = parser.parse_args()
+    UDP_IP = get_wsl_ip()
+    UDP_PORT = 8765
+    RATE = 60.0
+    DEADZONE = 0.1
+    JOYSTICK_ID = 0
 
     pygame.init()
     pygame.joystick.init()
@@ -43,18 +68,18 @@ def main():
         raise RuntimeError("No controller detected")
 
     session_id = str(uuid.uuid4())
-    joystick = pygame.joystick.Joystick(args.joystick)
+    joystick = pygame.joystick.Joystick(JOYSTICK_ID)
 
     print(f"Controller: {joystick.get_name()}")
     print(f"Axes: {joystick.get_numaxes()}")
     print(f"Buttons: {joystick.get_numbuttons()}")
-    print(f"Sending UDP to {args.host}:{args.port}")
+    print(f"Sending UDP to {UDP_IP}:{UDP_PORT}")
 
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    destination = (args.host, args.port)
+    destination = (UDP_IP, UDP_PORT)
 
     sequence = 0
-    period = 1.0 / args.rate
+    period = 1.0 / RATE
 
     try:
         while True:
@@ -64,7 +89,7 @@ def main():
             pygame.event.pump()
 
             axes = [
-                apply_deadzone(joystick.get_axis(i), args.deadzone)
+                apply_deadzone(joystick.get_axis(i), DEADZONE)
                 for i in range(joystick.get_numaxes())
             ]
 
