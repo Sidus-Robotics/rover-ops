@@ -13,7 +13,8 @@ class UdpReceiver(Node):
 
     This is a node to receive controller data from a windows computer inside the devcontainer.
 
-    Use in conjuntion with the controller_bridge.py helper script. See README and example usage in utils/controller_bridge/
+    Use in conjuntion with the controller_bridge.py helper script.
+    See README and example usage in utils/controller_bridge/
     """
 
     def __init__(self):
@@ -111,7 +112,6 @@ class UdpReceiver(Node):
 
     def publish_joy(self):
         """Publish the latest controller state, or neutral input on timeout."""
-
         # If packet took too long to recieve (longer than the timeout specified) return False
         packet_is_fresh = (
             self.last_packet_time is not None
