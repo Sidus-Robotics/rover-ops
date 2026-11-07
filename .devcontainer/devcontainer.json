@@ -7,7 +7,9 @@
     }
   },
   "runArgs": [
-    "--shm-size=1g"
+    "--network=host",
+    "--privileged",
+    "--volume=/dev/input/by-id:/dev/input/by-id"
   ],
   "remoteUser": "ubuntu",
   "containerUser": "ubuntu",

@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     ros-jazzy-pcl-ros \
     ros-jazzy-web-video-server \
     ros-jazzy-camera-ros \
+    ros-jazzy-joy \
     libssl-dev \
     zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
