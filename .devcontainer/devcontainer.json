@@ -7,8 +7,8 @@
     }
   },
   "runArgs": [
-    "--network=host",
     "--privileged",
+    "--publish=0.0.0.0:8765:8765/udp",
     "--volume=/dev/input/by-id:/dev/input/by-id"
   ],
   "remoteUser": "ubuntu",
@@ -23,7 +23,7 @@
       "version": "1.2.10"
     }
   },
-  "postCreateCommand": "bash -lc 'python3 -m venv .venv && .venv/bin/pip install --upgrade pip && .venv/bin/pip install -e ./ground_station && source /opt/ros/$ROS_DISTRO/setup.bash && rosdep update --rosdistro $ROS_DISTRO && rosdep install --from-paths src/rover_onboard/src --ignore-src --rosdistro $ROS_DISTRO -r -y'",
+  "postCreateCommand": "bash -lc 'source /opt/ros/$ROS_DISTRO/setup.bash && rosdep update --rosdistro $ROS_DISTRO && rosdep install -i --from-path src --rosdistro $ROS_DISTRO -r -y'",
   "forwardPorts": [
     6080
   ],

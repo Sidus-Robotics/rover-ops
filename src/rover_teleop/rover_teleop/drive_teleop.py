@@ -1,3 +1,5 @@
+# README and example usage in utils/controller_bridge/
+
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
@@ -12,7 +14,7 @@ class DriveTeleopNode(Node):
         self.get_logger().info("Drive motor teleoperation started.")
 
     def callback_joy(self, msg: Joy):
-        self.get_logger().info(msg)
+        self.get_logger().info(f"{msg.buttons}")
 
 
 def main(args=None):

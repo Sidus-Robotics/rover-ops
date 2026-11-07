@@ -1,17 +1,3 @@
-"""
-Controller bridge for Windows.
-
-This is a helper script to allow for usb devices (i.e. controllers)
-to be used within WSL.
-
-DEPENDANCIES:
-- pygame-ce
-
-USAGE:
-- Run this script seperately in WINDOWS (not WSL).
-- Run the controller bridge listener node within WSL.
-"""
-
 import json
 import re
 import socket
