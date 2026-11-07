@@ -57,7 +57,7 @@ def apply_deadzone(value: float, deadzone: float) -> float:
 def main():
     UDP_IP = get_wsl_ip()
     UDP_PORT = 8765
-    RATE = 60.0
+    POLL_RATE = 60.0  # Poll controller data 60 times a second
     DEADZONE = 0.1
     JOYSTICK_ID = 0
 
@@ -71,21 +71,17 @@ def main():
     joystick = pygame.joystick.Joystick(JOYSTICK_ID)
 
     print(f"Controller: {joystick.get_name()}")
-    print(f"Axes: {joystick.get_numaxes()}")
-    print(f"Buttons: {joystick.get_numbuttons()}")
     print(f"Sending UDP to {UDP_IP}:{UDP_PORT}")
 
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     destination = (UDP_IP, UDP_PORT)
 
     sequence = 0
-    period = 1.0 / RATE
+    period = 1.0 / POLL_RATE
 
     try:
         while True:
             loop_start = time.monotonic()
-
-            # Update Pygame's controller state.
             pygame.event.pump()
 
             axes = [
@@ -110,7 +106,7 @@ def main():
 
             sequence += 1
 
-            # Maintain the requested update frequency.
+            # Limit polling rate (similar to limiting fps)
             elapsed = time.monotonic() - loop_start
             time.sleep(max(0.0, period - elapsed))
 
@@ -118,7 +114,8 @@ def main():
         print("\nController bridge stopped.")
 
     finally:
-        # Best-effort neutral/disconnected packet.
+        # This makes sure that if the program breaks or when
+        # the program is stopped the motors are turned off :)
         try:
             packet = {
                 "sequence": sequence,
