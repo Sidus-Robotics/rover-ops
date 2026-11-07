@@ -33,7 +33,7 @@ Mission control & telemetry package. [README](ground_station/README.md)
 
 ## Development Setup
 
-The supported development environment is the ROS 2 Jazzy devcontainer, which provides the same compiler, ROS packages, Python environment, and VS Code extensions to teammates using Linux, WSL2, or macOS.
+The supported development environment is the ROS 2 Jazzy devcontainer, which provides the same compiler, ROS packages, and VS Code extensions to teammates using Linux, WSL2, or macOS.
 
 Follow the instructions below for *first time setup:*
 
@@ -44,7 +44,6 @@ Follow the instructions below for *first time setup:*
 **For Windows users (recommended):**
 - Install [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) and the Ubuntu 24.04 distribution.
 - Make sure to enable WSL integration for the installed distribution in Docker Desktop. Under **settings** -> **WSL Integration**.
-
 
 ### Installation
 
@@ -68,6 +67,29 @@ Follow the instructions below for *first time setup:*
 
     The *first* time the container builds it can take a long time.
 
+
+## Controller Support (Windows, WSL)
+
+WSL does not nativley suppoport to use of usb or bluetooth devices (i.e. controllers). If you need to use a controller for development or testing purposes there are a few extra steps you need to take.
+
+### Example Steps
+
+*Example instructions for controller support. Steps will differ depending on your setup* 
+
+Run this script seperately in WINDOWS (not WSL).
+
+```PS
+python3 controller_bridge.py
+```
+
+Inside the **devcontainer** run the udp_receiver node:
+
+```bash
+colcon build --select-packages rover_teleop
+source install/setup.bash
+ros2 run rover_teleop udp_receiver
+```
+
 ## Repository layout
 
 ```text
@@ -77,6 +99,7 @@ Follow the instructions below for *first time setup:*
 docs/                   Additional developer documentation
 ground_station/         Python ground station package (temp)
 src/                    ROS 2 packages live here
+utils/                  Helpful scripts for development and testing
 ```
 
 ## Contributing
