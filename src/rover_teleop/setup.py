@@ -22,6 +22,9 @@ setup(
         ],
     },
     entry_points={
-        "console_scripts": ["drive_teleop = rover_teleop.drive_teleop:main"],
+        "console_scripts": [
+            "drive_teleop = rover_teleop.drive_teleop:main",
+            "udp_receiver = rover_teleop.udp_receiver:main",
+        ],
     },
 )
