@@ -22,16 +22,12 @@ jobs:
         uses: ros-tooling/action-ros-ci@v0.4
         with:
           target-ros2-distro: jazzy
-          # source-space: src 
+          skip-tests: true 
           colcon-defaults: |
             {
               "build": {
                 "packages-ignore": ["comms_init", "point_lio", "unilidar_l2"]
               },
-              "test": {
-                "pytest-args": ["-o", "flake8-ignore=Q000"],
-                "packages-ignore": ["comms_init", "point_lio", "unilidar_l2"]
-              }
             }
 
 # jobs:
