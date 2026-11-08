@@ -4,10 +4,10 @@
 name: CI
 on:
 
-  pull_request:
+  # pull_request:
   push:
-    branches:
-      - main
+    # branches:
+    #   - main
 
 jobs:
   build_ros2:
@@ -17,45 +17,46 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-# Need to install dependencies outside the ROS2 stack.
-#       - name: Install C++ libraries
-#         shell: bash
-#         run: |
-#           apt-get update
-#           apt-get install -y --no-install-recommends \
-#             git cmake g++ libssl-dev zlib1g-dev \
-#             lcov python3-colcon-lcov-result python3-colcon-coveragepy-result
 
-#           git clone https://github.com/machinezone/IXWebSocket.git "$RUNNER_TEMP/IXWebSocket"
-#           cmake -S "$RUNNER_TEMP/IXWebSocket" -B "$RUNNER_TEMP/IXWebSocket/build"
-#           cmake --build "$RUNNER_TEMP/IXWebSocket/build" --parallel 2
-#           cmake --install "$RUNNER_TEMP/IXWebSocket/build"
+      # Need to install dependencies outside the ROS2 stack.
+      - name: Install C++ libraries
+        shell: bash
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            git cmake g++ libssl-dev zlib1g-dev \
+            lcov python3-colcon-lcov-result python3-colcon-coveragepy-result
 
-#           git clone https://github.com/gbmhunter/CppLinuxSerial.git "$RUNNER_TEMP/CppLinuxSerial"
-#           cmake -S "$RUNNER_TEMP/CppLinuxSerial" -B "$RUNNER_TEMP/CppLinuxSerial/build" \
-#             -DBUILD_TESTS=OFF
-#           cmake --build "$RUNNER_TEMP/CppLinuxSerial/build" --parallel 2
-#           cmake --install "$RUNNER_TEMP/CppLinuxSerial/build"
-#           ldconfig
+          git clone https://github.com/machinezone/IXWebSocket.git "$RUNNER_TEMP/IXWebSocket"
+          cmake -S "$RUNNER_TEMP/IXWebSocket" -B "$RUNNER_TEMP/IXWebSocket/build"
+          cmake --build "$RUNNER_TEMP/IXWebSocket/build" --parallel 2
+          cmake --install "$RUNNER_TEMP/IXWebSocket/build"
 
-# Added this in because it takes way too long to build.
-#       - name: Setup Compiler Cache (ccache)
-#         uses: actions/cache@v4
-#         with:
-#           path: .ccache
-#           key: ccache-${{ runner.os }}-${{ github.sha }}
-#           restore-keys: ccache-${{ runner.os }}-
+          git clone https://github.com/gbmhunter/CppLinuxSerial.git "$RUNNER_TEMP/CppLinuxSerial"
+          cmake -S "$RUNNER_TEMP/CppLinuxSerial" -B "$RUNNER_TEMP/CppLinuxSerial/build" \
+            -DBUILD_TESTS=OFF
+          cmake --build "$RUNNER_TEMP/CppLinuxSerial/build" --parallel 2
+          cmake --install "$RUNNER_TEMP/CppLinuxSerial/build"
+          ldconfig
+
+      # Added this in because it takes way too long to build.
+      - name: Setup Compiler Cache (ccache)
+        uses: actions/cache@v4
+        with:
+          path: .ccache
+          key: ccache-${{ runner.os }}-${{ github.sha }}
+          restore-keys: ccache-${{ runner.os }}-
 
       - name: Build
         uses: ros-tooling/action-ros-ci@v0.4
         with:
           target-ros2-distro: jazzy
           skip-tests: true 
-#           rosdep-skip-keys: "libcamera CppLinuxSerial IXWebSocket Threads"
+          rosdep-skip-keys: "libcamera CppLinuxSerial IXWebSocket Threads"
           colcon-defaults: |
             {
               "build": {
-                "packages-ignore": ["comms_init", "point_lio", "unilidar_l2"]
+                "packages-ignore": ["point_lio", "unilidar_l2"]
               }
             }
 
