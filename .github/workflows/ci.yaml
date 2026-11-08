@@ -20,17 +20,17 @@ jobs:
 
       - name: Build and run tests
         uses: ros-tooling/action-ros-ci@v0.4
-        env:
-          FLAKE8_FLAGS: "--ignore=Q000,Q001,Q002"
         with:
           target-ros2-distro: jazzy
           source-space: src
+          colcon-extra-args: 
           colcon-defaults: |
             {
               "build": {
                 "packages-ignore": ["comms_init", "point_lio", "unilidar_l2"]
               },
               "test": {
+                "pytest-args": ["-o", "flake8-ignore=Q000"]
                 "packages-ignore": ["comms_init", "point_lio", "unilidar_l2"]
               }
             }
