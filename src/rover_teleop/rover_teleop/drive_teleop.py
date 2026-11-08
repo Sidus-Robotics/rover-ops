@@ -46,6 +46,8 @@ class DriveTeleopNode(Node):
         else:
             self.linear[0] = 0.0
 
+        # TODO: Add ramping
+
     def publish_cmd_vel(self):
         msg = Twist()
 
