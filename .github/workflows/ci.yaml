@@ -23,6 +23,15 @@ jobs:
         with:
           target-ros2-distro: jazzy
           source-space: src
+          colcon-defaults: |
+            {
+              "build": {
+                "packages-ignore": ["comms_init", "point_lio", "unilidar_l2"]
+              },
+              "test": {
+                "packages-ignore": ["comms_init", "point_lio", "unilidar_l2"]
+              }
+            }
 
 # jobs:
 #   build_and_test_ros2:

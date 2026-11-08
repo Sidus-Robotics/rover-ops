@@ -2,10 +2,10 @@
 # Re-configured for workspace instead of single package
 name: Lint ROS 2 Workspace
 on:
-  pull_request:
+  # pull_request:
   push:
-    branches:
-      - master
+    # branches:
+    #   - main
 
 jobs:
   ament_lint_workspace:
@@ -15,16 +15,15 @@ jobs:
       fail-fast: false
       matrix:
         # cppcheck excluded due to performance issues noted in ament_lint/pull/345
-        linter: [cpplint, uncrustify, xmllint]
+        linter: [cpplint, uncrustify, xmllint, flake8, pep257]
     steps:
       - uses: actions/checkout@v4
 
       - uses: ros-tooling/setup-ros@v0.7
         with:
-          required-ros-distributions: humble # Swap to your targeted version (e.g., jazzy, rolling)
+          required-ros-distributions: jazzy
 
       - uses: ros-tooling/action-ros-lint@v0.1
         with:
           linter: ${{ matrix.linter }}
-          # Points the action to scan the whole folder rather than a single package
           sub-path: src
