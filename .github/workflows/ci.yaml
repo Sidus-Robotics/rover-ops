@@ -4,45 +4,20 @@
 name: CI
 on:
 
-  # pull_request:
+  pull_request:
   push:
-    # branches:
-    #   - main
+    branches:
+      - main
 
 jobs:
-  build_and_test_ros2:
+  build_ros2:
     runs-on: ubuntu-latest
     container:
       image: rostooling/setup-ros-docker:ubuntu-noble-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Build and run tests
-        uses: ros-tooling/action-ros-ci@v0.4
-        with:
-          target-ros2-distro: jazzy
-          skip-tests: true 
-          colcon-defaults: |
-            {
-              "build": {
-                "packages-ignore": ["comms_init", "point_lio", "unilidar_l2"]
-              }
-            }
-
-# jobs:
-#   build_and_test_ros2:
-#     runs-on: ubuntu-latest
-
-#     # Added this in because it takes way too long to build.
-#     container:
-#         image: ros:jazzy-ros-base
-
-#     steps:
-#       - name: Checkout Source Code
-#         uses: actions/checkout@v4
-
-#       # Need to install dependencies outside the ROS2 stack.
+# Need to install dependencies outside the ROS2 stack.
 #       - name: Install C++ libraries
 #         shell: bash
 #         run: |
@@ -63,7 +38,7 @@ jobs:
 #           cmake --install "$RUNNER_TEMP/CppLinuxSerial/build"
 #           ldconfig
 
-#       # Added this in because it takes way too long to build.
+# Added this in because it takes way too long to build.
 #       - name: Setup Compiler Cache (ccache)
 #         uses: actions/cache@v4
 #         with:
@@ -71,17 +46,16 @@ jobs:
 #           key: ccache-${{ runner.os }}-${{ github.sha }}
 #           restore-keys: ccache-${{ runner.os }}-
 
-#       - name: Check ROS2 Build Status
-#         uses: ros-tooling/action-ros-ci@v0.4
-#         with:
-#           import-token: ${{ secrets.GITHUB_TOKEN }}
-#           target-ros2-distro: jazzy
-#           # Skip dependencies that you know work but the build tweaks
-#           # Skip packages
-#           colcon-defaults: |
-#             {
-#               "test": {
-#                 "packages-skip": ["ground-code"]
-#               }
-#             }
+      - name: Build
+        uses: ros-tooling/action-ros-ci@v0.4
+        with:
+          target-ros2-distro: jazzy
+          skip-tests: true 
 #           rosdep-skip-keys: "libcamera CppLinuxSerial IXWebSocket Threads"
+          colcon-defaults: |
+            {
+              "build": {
+                "packages-ignore": ["comms_init", "point_lio", "unilidar_l2"]
+              }
+            }
+
