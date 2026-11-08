@@ -1,15 +1,30 @@
-# TODO
-
-# Check formatting
-# Check lint
-# Check clang
-name: Lint
-
+# From: https://github.com/ros-tooling/action-ros-ci-template/blob/master/.github/workflows/lint.yml
+# Re-configured for workspace instead of single package
+name: Lint ROS 2 Workspace
 on:
+  pull_request:
   push:
+    branches:
+      - master
 
 jobs:
-  check_format_and_lint:
+  ament_lint_workspace:
+    name: ament_${{ matrix.linter }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # cppcheck excluded due to performance issues noted in ament_lint/pull/345
+        linter: [cpplint, uncrustify, xmllint]
     steps:
-      - run: echo "Todo."
+      - uses: actions/checkout@v4
+
+      - uses: ros-tooling/setup-ros@v0.7
+        with:
+          required-ros-distributions: humble # Swap to your targeted version (e.g., jazzy, rolling)
+
+      - uses: ros-tooling/action-ros-lint@v0.1
+        with:
+          linter: ${{ matrix.linter }}
+          # Points the action to scan the whole folder rather than a single package
+          sub-path: src

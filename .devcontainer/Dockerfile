@@ -13,13 +13,12 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     python3-pip \
     python3-setuptools \
     python3-venv \
+    ros-jazzy-desktop \
     ros-jazzy-ros-gz \
     ros-jazzy-ros-gz-bridge \
-    ros-jazzy-pcl-conversions \
     ros-jazzy-pcl-ros \
     ros-jazzy-web-video-server \
     ros-jazzy-camera-ros \
-    ros-jazzy-joy \
     libssl-dev \
     zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
