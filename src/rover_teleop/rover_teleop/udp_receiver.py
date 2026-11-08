@@ -13,7 +13,7 @@ class UdpReceiver(Node):
 
     This is a node to receive controller data from a windows computer inside the devcontainer.
 
-    Use in conjuntion with the controller_bridge.py helper script.
+    Use in conjuntion with the controller_bridge.py util script.
     See README and example usage in utils/controller_bridge/
     """
 
@@ -46,7 +46,7 @@ class UdpReceiver(Node):
         # PUBLISHER
         self.joy_publisher = self.create_publisher(Joy, "/joy", 10)
 
-        # UDP socket.
+        # UDP socket
         self.udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.udp_socket.bind(("0.0.0.0", port))
@@ -127,7 +127,7 @@ class UdpReceiver(Node):
             msg.axes = self.axes
             msg.buttons = self.buttons
         else:
-            # No recent packet or controller disconnected.
+            # No recent packet or controller disconnected
             msg.axes = [0.0] * max(len(self.axes), self.default_axes)
             msg.buttons = [0] * max(len(self.buttons), self.default_buttons)
 
