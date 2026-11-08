@@ -27,7 +27,7 @@ jobs:
             {
               "build": {
                 "packages-ignore": ["comms_init", "point_lio", "unilidar_l2"]
-              },
+              }
             }
 
 # jobs:
