@@ -20,6 +20,8 @@ jobs:
 
       - name: Build and run tests
         uses: ros-tooling/action-ros-ci@v0.4
+        env:
+          FLAKE8_FLAGS: "--ignore=Q000,Q001,Q002"
         with:
           target-ros2-distro: jazzy
           source-space: src
