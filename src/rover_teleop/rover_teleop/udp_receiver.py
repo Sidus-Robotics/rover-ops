@@ -60,12 +60,12 @@ class UdpReceiver(Node):
         self.session_id = None
         self.connected = False
 
-        self.create_timer(0.005, self.receive_packets)
-        self.create_timer(1.0 / publish_rate, self.publish_joy)
+        self.create_timer(0.005, self.callback_receive_packets)
+        self.create_timer(1.0 / publish_rate, self.callback_publish_joy)
 
         self.get_logger().info(f"UDP receiver listening on port {port}")
 
-    def receive_packets(self):
+    def callback_receive_packets(self):
         """Read all currently available UDP packets."""
         while True:
             try:
@@ -110,7 +110,7 @@ class UdpReceiver(Node):
             except (KeyError, ValueError, TypeError, UnicodeDecodeError) as exc:
                 self.get_logger().warning(f"Discarded UDP packet: {exc}")
 
-    def publish_joy(self):
+    def callback_publish_joy(self):
         """Publish the latest controller state, or neutral input on timeout."""
         # If packet took too long to recieve (longer than the timeout specified) return False
         packet_is_fresh = (
