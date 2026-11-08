@@ -25,6 +25,7 @@ setup(
         "console_scripts": [
             "drive_teleop = rover_teleop.drive_teleop:main",
             "udp_receiver = rover_teleop.udp_receiver:main",
+            "esp32_serial_bridge = rover_teleop.esp32_serial_bridge:main",
         ],
     },
 )
